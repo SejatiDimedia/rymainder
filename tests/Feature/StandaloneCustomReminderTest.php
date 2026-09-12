@@ -211,6 +211,43 @@ class StandaloneCustomReminderTest extends TestCase
         $this->assertFalse($reminder->sponsors->contains($sponsor1));
     }
 
+    public function test_updating_one_time_reminder_resets_last_run_and_reactivates_schedule(): void
+    {
+        $pastDate = Carbon::parse('2026-09-01 10:00:00');
+        $newFutureDate = Carbon::parse('2026-09-20 15:30:00');
+
+        $reminder = CustomReminder::create([
+            'title' => 'One Time Event Reminder',
+            'message' => 'Event starts soon!',
+            'channels' => ['email'],
+            'target_type' => 'all_active',
+            'schedule_type' => 'once',
+            'scheduled_at' => $pastDate,
+            'last_run_at' => $pastDate,
+            'next_run_at' => null,
+            'is_active' => false,
+        ]);
+
+        $response = $this->actingAs($this->superAdmin)
+            ->put(route('admin.custom-reminders.update', $reminder), [
+                'title' => 'One Time Event Reminder - Rescheduled',
+                'message' => 'Event starts soon!',
+                'channels' => ['email'],
+                'target_type' => 'all_active',
+                'schedule_type' => 'once',
+                'scheduled_at' => $newFutureDate->format('Y-m-d\TH:i'),
+                'is_active' => '1',
+            ]);
+
+        $response->assertRedirect(route('admin.custom-reminders.index'));
+
+        $reminder->refresh();
+        $this->assertTrue($reminder->is_active);
+        $this->assertNull($reminder->last_run_at);
+        $this->assertNotNull($reminder->next_run_at);
+        $this->assertEquals($newFutureDate->format('Y-m-d H:i'), $reminder->next_run_at->format('Y-m-d H:i'));
+    }
+
     public function test_super_admin_can_toggle_active_status_of_custom_reminder(): void
     {
         $reminder = CustomReminder::create([

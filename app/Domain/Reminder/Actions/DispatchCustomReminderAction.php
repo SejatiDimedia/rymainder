@@ -33,9 +33,12 @@ class DispatchCustomReminderAction
         }
 
         $now = now();
+        $isOnce = $customReminder->schedule_type === 'once';
+
         $customReminder->update([
             'last_run_at' => $now,
-            'next_run_at' => $customReminder->computeNextRunAt($now),
+            'is_active' => $isOnce ? false : $customReminder->is_active,
+            'next_run_at' => $isOnce ? null : $customReminder->computeNextRunAt($now),
             'total_sent_count' => $customReminder->total_sent_count + $count,
         ]);
 

@@ -92,7 +92,7 @@ class CustomReminderController extends Controller
     {
         $times = $this->resolveScheduleTimes($request);
 
-        $customReminder->update([
+        $data = [
             'title' => $request->title,
             'message' => $request->message,
             'channels' => $request->channels,
@@ -103,7 +103,13 @@ class CustomReminderController extends Controller
             'schedule_day' => $request->schedule_day,
             'scheduled_at' => $request->scheduled_at,
             'is_active' => $request->boolean('is_active', true),
-        ]);
+        ];
+
+        if ($request->schedule_type === 'once' && $request->scheduled_at) {
+            $data['last_run_at'] = null;
+        }
+
+        $customReminder->update($data);
 
         if ($request->target_type === 'selected' && $request->has('sponsor_ids')) {
             $customReminder->sponsors()->sync($request->sponsor_ids);

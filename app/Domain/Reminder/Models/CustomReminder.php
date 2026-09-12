@@ -131,7 +131,9 @@ class CustomReminder extends Model
             'multiple_daily' => $this->computeNextMultipleDailyRun($now),
             'interval_hours' => $now->copy()->addHours($this->interval_hours ?: 2),
             'weekly' => $this->computeNextWeeklyRun($now),
-            'once' => ($this->last_run_at !== null) ? null : ($this->scheduled_at ?: $now),
+            'once' => ($this->scheduled_at && $this->last_run_at && $this->scheduled_at->lessThanOrEqualTo($this->last_run_at))
+                ? null
+                : ($this->scheduled_at ?: $now),
             default => $now->copy()->addDay(),
         };
     }

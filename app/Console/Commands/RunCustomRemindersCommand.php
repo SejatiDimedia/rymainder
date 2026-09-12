@@ -31,10 +31,8 @@ class RunCustomRemindersCommand extends Command
 
         $now = now();
         $dueReminders = CustomReminder::where('is_active', true)
-            ->where(function ($query) use ($now) {
-                $query->whereNull('next_run_at')
-                    ->orWhere('next_run_at', '<=', $now);
-            })
+            ->whereNotNull('next_run_at')
+            ->where('next_run_at', '<=', $now)
             ->get();
 
         if ($dueReminders->isEmpty()) {

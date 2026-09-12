@@ -83,8 +83,8 @@
                                         <h2 class="font-bold text-slate-900 text-sm">
                                             {{ $reminder->title }}
                                         </h2>
-                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold whitespace-nowrap {{ $reminder->is_active ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-100 text-slate-600 border border-slate-200' }}">
-                                            {{ $reminder->is_active ? 'Active' : 'Paused' }}
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold whitespace-nowrap {{ $reminder->is_active ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : ($reminder->schedule_type === 'once' && $reminder->last_run_at ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-slate-100 text-slate-600 border border-slate-200') }}">
+                                            {{ $reminder->is_active ? 'Active' : ($reminder->schedule_type === 'once' && $reminder->last_run_at ? 'Completed' : 'Paused') }}
                                         </span>
                                     </div>
                                     <div class="flex items-center gap-2 mt-1 flex-wrap text-[11px]">
