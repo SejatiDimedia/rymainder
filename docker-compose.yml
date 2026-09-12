@@ -1,0 +1,31 @@
+services:
+  mysql:
+    image: 'mysql:8.0'
+    container_name: 'rymainder_mysql'
+    restart: unless-stopped
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: 'rootpassword'
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_DATABASE: 'rymainder'
+      MYSQL_USER: 'rymainder_user'
+      MYSQL_PASSWORD: 'secretpassword'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'no'
+    volumes:
+      - 'rymainder_mysql_data:/var/lib/mysql'
+    networks:
+      - rymainder_net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-psecretpassword", "-u", "rymainder_user"]
+      retries: 10
+      interval: 3s
+      timeout: 5s
+
+networks:
+  rymainder_net:
+    driver: bridge
+
+volumes:
+  rymainder_mysql_data:
+    driver: local
