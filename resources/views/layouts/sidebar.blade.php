@@ -11,21 +11,21 @@
         <!-- Logo Header -->
         <div class="flex items-center justify-between pb-6" :class="sidebarCollapsed ? 'lg:justify-center' : ''">
             <a href="{{ route('dashboard') }}" class="flex items-center gap-3 group" :title="sidebarCollapsed ? 'Rymainder' : ''">
-                <div class="w-9 h-9 rounded-xl bg-slate-900 flex items-center justify-center text-white shadow-sm group-hover:bg-slate-800 transition shrink-0">
-                    <!-- Stack / Layers Icon -->
-                    <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-                        <polyline points="2 17 12 22 22 17"></polyline>
-                        <polyline points="2 12 12 17 22 12"></polyline>
-                    </svg>
+                <div class="w-9 h-9 rounded-xl overflow-hidden shadow-xs ring-1 ring-slate-200/60 group-hover:scale-105 transition-transform duration-200 shrink-0 bg-slate-950">
+                    <img src="{{ asset('images/logo.png') }}" alt="Rymainder Logo" class="w-full h-full object-cover">
                 </div>
-                <span 
+                <div 
                     x-show="!sidebarCollapsed" 
                     x-transition.opacity 
-                    class="font-bold text-slate-900 tracking-tight text-base whitespace-nowrap"
+                    class="flex flex-col"
                 >
-                    Rymainder
-                </span>
+                    <span class="font-bold text-slate-900 tracking-tight text-base whitespace-nowrap leading-tight">
+                        Rymainder
+                    </span>
+                    <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
+                        Pledge Cloud
+                    </span>
+                </div>
             </a>
 
             <!-- Sidebar collapse / toggle icon matching reference -->

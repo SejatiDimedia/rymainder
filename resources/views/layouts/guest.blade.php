@@ -5,7 +5,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Rymainder') }} - Autentikasi</title>
+        <title>{{ config('app.name', 'Rymainder') }} - Authentication</title>
+        <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
 
         <!-- Google / Bunny Fonts: Inter -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -18,18 +19,17 @@
         <div class="sm:mx-auto sm:w-full sm:max-w-md">
             <!-- Brand Logo matching reference -->
             <div class="flex flex-col items-center justify-center">
-                <a href="/" class="flex items-center gap-3 group">
-                    <div class="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center text-white shadow-sm group-hover:bg-slate-800 transition">
-                        <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-                            <polyline points="2 17 12 22 22 17"></polyline>
-                            <polyline points="2 12 12 17 22 12"></polyline>
-                        </svg>
+                <a href="/" class="flex items-center gap-3.5 group">
+                    <div class="w-12 h-12 rounded-2xl overflow-hidden shadow-md ring-1 ring-slate-200/80 group-hover:scale-105 transition-transform duration-200 shrink-0 bg-slate-950">
+                        <img src="{{ asset('images/logo.png') }}" alt="Rymainder Logo" class="w-full h-full object-cover">
                     </div>
-                    <span class="font-bold text-slate-900 tracking-tight text-xl">Rymainder</span>
+                    <div class="flex flex-col">
+                        <span class="font-bold text-slate-900 tracking-tight text-2xl leading-none">Rymainder</span>
+                        <span class="text-[11px] font-semibold text-indigo-600 tracking-wider uppercase mt-1">Pledge Cloud Platform</span>
+                    </div>
                 </a>
-                <p class="text-xs text-slate-500 mt-2 text-center">
-                    Sistem Otomasi Pengingat Donasi & Pemantauan Sponsor
+                <p class="text-xs text-slate-500 mt-2.5 text-center max-w-xs">
+                    Automated donor pledge reminders & multi-channel cycle audits
                 </p>
             </div>
         </div>
@@ -41,7 +41,7 @@
 
             <!-- Footer -->
             <div class="mt-6 text-center text-xs text-slate-400">
-                &copy; {{ date('Y') }} Rymainder. Dilindungi hak cipta.
+                &copy; {{ date('Y') }} Rymainder. All rights reserved.
             </div>
         </div>
     </body>
