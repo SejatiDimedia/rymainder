@@ -68,7 +68,8 @@ class SendCustomReminderJob implements ShouldQueue
             dueDate: $nextDueDate,
             waveLabel: $customReminder->title,
             daysDifference: $daysDiff,
-            customTemplate: $customReminder->message
+            customTemplate: $customReminder->message,
+            isCustom: true,
         );
 
         $log = ReminderLog::create([

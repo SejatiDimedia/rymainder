@@ -19,6 +19,7 @@ class NotificationPayload
         public readonly string $paymentInstructions,
         public readonly string $subject,
         public readonly string $messageBody,
+        public readonly bool $isCustom = false,
     ) {
     }
 
@@ -29,6 +30,7 @@ class NotificationPayload
         int $daysDifference,
         ?string $customTemplate = null,
         ?string $directMessage = null,
+        bool $isCustom = false,
     ): self {
         $formattedDate = Carbon::parse($dueDate)->translatedFormat('d F Y');
         $formattedAmount = 'Rp ' . number_format($sponsor->amount, 0, ',', '.');
@@ -51,7 +53,9 @@ class NotificationPayload
             $headline = "Pemberitahuan Keterlambatan Donasi Sponsor";
         }
 
-        $subject = "[{$headline}] Komitmen Donasi - {$sponsor->name}";
+        $subject = $isCustom
+            ? "[{$platformName}] {$waveLabel} - {$sponsor->name}"
+            : "[{$headline}] Komitmen Donasi - {$sponsor->name}";
 
         if ($directMessage !== null && trim($directMessage) !== '') {
             $messageBody = trim($directMessage);
@@ -93,6 +97,7 @@ class NotificationPayload
             paymentInstructions: $paymentInstructions,
             subject: $subject,
             messageBody: $messageBody,
+            isCustom: $isCustom,
         );
     }
 }

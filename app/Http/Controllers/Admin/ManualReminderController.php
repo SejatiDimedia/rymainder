@@ -66,7 +66,8 @@ class ManualReminderController extends Controller
             dueDate: $nextDueDate,
             waveLabel: $setting ? $setting->label : 'Custom Direct Reminder',
             daysDifference: $daysDiff,
-            directMessage: $validated['message']
+            directMessage: $validated['message'],
+            isCustom: true,
         );
 
         try {

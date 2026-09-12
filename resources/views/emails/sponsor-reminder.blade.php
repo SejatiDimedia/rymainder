@@ -27,12 +27,14 @@
             <h1>{{ $platformName }}</h1>
         </div>
         <div class="content">
-            <span class="badge">{{ $payload->waveLabel }}</span>
+            @if(! $payload->isCustom)
+                <span class="badge">{{ $payload->waveLabel }}</span>
 
-            <div class="highlight-box">
-                <div class="due-date">Target Jatuh Tempo: <strong>{{ \Carbon\Carbon::parse($payload->dueDate)->translatedFormat('d F Y') }}</strong></div>
-                <div class="amount">{{ $payload->formattedAmount }}</div>
-            </div>
+                <div class="highlight-box">
+                    <div class="due-date">Target Jatuh Tempo: <strong>{{ \Carbon\Carbon::parse($payload->dueDate)->translatedFormat('d F Y') }}</strong></div>
+                    <div class="amount">{{ $payload->formattedAmount }}</div>
+                </div>
+            @endif
 
             <div class="message-body">{!! nl2br(e($payload->messageBody)) !!}</div>
         </div>
