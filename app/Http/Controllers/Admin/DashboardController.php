@@ -20,6 +20,7 @@ class DashboardController extends Controller
         // 1. Core KPIs
         $totalActiveSponsors = Sponsor::where('status', SponsorStatus::ACTIVE)->count();
         $totalPausedSponsors = Sponsor::where('status', SponsorStatus::PAUSED)->count();
+        $totalActiveAmount = Sponsor::where('status', SponsorStatus::ACTIVE)->sum('amount');
 
         // Fetch all active sponsors to compute due status distribution
         $activeSponsors = Sponsor::where('status', SponsorStatus::ACTIVE)->get();
@@ -79,6 +80,7 @@ class DashboardController extends Controller
         return view('admin.dashboard', [
             'totalActiveSponsors' => $totalActiveSponsors,
             'totalPausedSponsors' => $totalPausedSponsors,
+            'totalActiveAmount' => $totalActiveAmount,
             'dueSoonCount' => $dueSoonCount,
             'overdueCount' => $overdueCount,
             'todaySentCount' => $todaySentCount,
