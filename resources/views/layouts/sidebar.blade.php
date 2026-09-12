@@ -115,6 +115,20 @@
                     <span x-show="!sidebarCollapsed" x-transition.opacity class="whitespace-nowrap">Reminder Waves</span>
                 </a>
 
+                <!-- Custom Reminders (Super Admin only) -->
+                <a 
+                    href="{{ route('admin.custom-reminders.index') }}" 
+                    class="flex items-center gap-3 rounded-xl text-sm transition duration-150 {{ request()->routeIs('admin.custom-reminders.*') ? 'bg-slate-100/90 text-slate-900 font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50 font-medium' }}"
+                    :class="sidebarCollapsed ? 'lg:justify-center lg:px-2.5 py-2.5 px-3.5' : 'px-3.5 py-2.5'"
+                    :title="sidebarCollapsed ? 'Custom Reminders' : ''"
+                >
+                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('admin.custom-reminders.*') ? 'text-slate-900' : 'text-slate-400' }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    <span x-show="!sidebarCollapsed" x-transition.opacity class="whitespace-nowrap">Custom Reminders</span>
+                </a>
+
                 <!-- Platform Branding (Super Admin only) -->
                 <a 
                     href="{{ route('admin.settings.platform') }}" 
