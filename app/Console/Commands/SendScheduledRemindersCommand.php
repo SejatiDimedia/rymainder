@@ -21,30 +21,37 @@ class SendScheduledRemindersCommand extends Command
      * @var string
      */
     protected $signature = 'reminders:send 
+                            {--wave= : Specific Reminder Setting ID to evaluate and dispatch}
                             {--date= : Custom reference date in YYYY-MM-DD format for simulation/testing}
                             {--dry-run : Simulate execution without dispatching queue jobs}';
 
     /**
      * The console command description.
-     *
-     * @var string
      */
     protected $description = 'Evaluate sponsor due dates and dispatch automated reminder wave jobs to the queue';
 
     public function handle(DueDateCalculator $calculator): int
     {
         $dateOption = $this->option('date');
+        $waveOption = $this->option('wave');
         $referenceDate = $dateOption ? Carbon::parse($dateOption)->startOfDay() : now()->startOfDay();
         $isDryRun = (bool) $this->option('dry-run');
 
         $this->info("==========================================================");
         $this->info(" Rymainder Automated Sponsor Reminder Engine");
         $this->info(" Reference Date : " . $referenceDate->translatedFormat('l, d F Y'));
+        if ($waveOption) {
+            $this->info(" Target Wave ID : " . $waveOption);
+        }
         $this->info(" Mode           : " . ($isDryRun ? "DRY-RUN (No jobs queued)" : "PRODUCTION (Queue Dispatch)"));
         $this->info("==========================================================");
 
         // 1. Fetch active reminder wave settings
-        $activeSettings = ReminderSetting::where('is_active', true)->get();
+        $query = ReminderSetting::where('is_active', true);
+        if (! empty($waveOption)) {
+            $query->where('id', $waveOption);
+        }
+        $activeSettings = $query->get();
 
         if ($activeSettings->isEmpty()) {
             $this->warn("No active reminder wave settings configured in reminder_settings table. Exiting.");

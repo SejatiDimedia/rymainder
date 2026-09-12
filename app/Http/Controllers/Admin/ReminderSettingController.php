@@ -18,6 +18,7 @@ class ReminderSettingController extends Controller
 
         return view('admin.settings.index', [
             'settings' => $settings,
+            'daysOfWeek' => ReminderSetting::daysOfWeek(),
             'availableChannels' => [
                 ReminderChannel::EMAIL,
                 ReminderChannel::WHATSAPP,
