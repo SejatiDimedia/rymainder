@@ -3,7 +3,7 @@
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
                 <h1 class="text-xl font-bold text-slate-900 tracking-tight">Reminder Wave Settings</h1>
-                <p class="text-xs text-slate-500 mt-0.5">Manage delivery schedule rules, custom message templates, and automated dispatch timing per wave</p>
+                <p class="text-xs text-slate-500 mt-0.5">Manage automated due-date reminder waves, active delivery channels, and custom message templates</p>
             </div>
             <div>
                 <button 
@@ -51,17 +51,59 @@
             </span>
         </div>
 
+        <!-- Automated Daily Engine Schedule Card -->
+        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-5 sm:p-6">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div class="space-y-1">
+                    <div class="flex items-center gap-2">
+                        <h2 class="text-sm font-bold text-slate-900">Automated Daily Schedule</h2>
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/80 whitespace-nowrap">
+                            System Engine Active
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-500 max-w-2xl leading-relaxed">
+                        The background engine triggers once daily at this exact time to scan all active sponsors against the due-date waves below. Donors matching any active wave are automatically queued and notified.
+                    </p>
+                </div>
+
+                <form method="POST" action="{{ route('admin.settings.schedule-time') }}" class="flex items-center gap-2.5 shrink-0">
+                    @csrf
+                    @method('PUT')
+
+                    <div class="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200">
+                        <label for="reminder_dispatch_time" class="text-xs font-semibold text-slate-600 whitespace-nowrap">Daily Run at:</label>
+                        <input 
+                            type="time" 
+                            id="reminder_dispatch_time" 
+                            name="reminder_dispatch_time" 
+                            value="{{ $dispatchTime }}" 
+                            required 
+                            class="text-xs font-bold rounded-lg border-slate-300 bg-white text-slate-900 focus:border-slate-400 focus:ring-slate-400 py-1 px-2"
+                        >
+                        <span class="text-xs font-semibold text-slate-400">WIB</span>
+                    </div>
+
+                    <button 
+                        type="submit" 
+                        class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold shadow-xs transition active:scale-[0.98] whitespace-nowrap cursor-pointer"
+                    >
+                        Save Time
+                    </button>
+                </form>
+            </div>
+        </div>
+
         <!-- Info Guide Card -->
         <div class="p-5 bg-indigo-50/70 border border-indigo-100 rounded-2xl text-xs text-indigo-950 leading-relaxed shadow-xs">
             <div class="font-bold mb-1.5 flex items-center gap-2 text-indigo-900">
                 <svg class="w-4 h-4 text-indigo-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                <span>Reminder Wave Rules, Flexible Schedules & Dynamic Templates:</span>
+                <span>How Reminder Waves Work:</span>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-indigo-900/80 mt-2">
                 <ul class="list-disc list-inside space-y-1">
-                    <li><strong>Due Date Offsets:</strong> Positive (e.g. 7 for H-7), 0 (Due Date), or Negative (e.g. -7 for Overdue follow-up).</li>
-                    <li><strong>Flexible Schedule Rules:</strong> Each wave can run on its own schedule (e.g. <em>Daily at 07:00</em>, or <em>Weekly every Monday at 12:00</em>).</li>
-                    <li><strong>Zero Duplicate Guarantee:</strong> Donors will never receive duplicate reminders for the same wave in the same donation cycle.</li>
+                    <li><strong>Due Date Offsets:</strong> Positive values (e.g. 7 for H-7), 0 (Due Date), or Negative values (e.g. -7 for Overdue follow-up).</li>
+                    <li><strong>Daily Automated Scan:</strong> At {{ $dispatchTime }} WIB each day, the scheduler matches all donors whose due date equals today ± wave offset.</li>
+                    <li><strong>Zero Duplicate Guarantee:</strong> Donors are only ever notified once per wave per donation cycle via the unique audit log.</li>
                 </ul>
                 <div class="space-y-1">
                     <p><strong>Available Dynamic Merge Tags:</strong></p>
@@ -82,7 +124,7 @@
         <!-- Waves Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             @foreach($settings as $setting)
-                <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-6 flex flex-col justify-between" x-data="{ expandedTemplate: {{ !empty($setting->message_template) ? 'true' : 'false' }}, frequency: '{{ $setting->schedule_frequency ?: 'daily' }}' }">
+                <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-6 flex flex-col justify-between" x-data="{ expandedTemplate: {{ !empty($setting->message_template) ? 'true' : 'false' }} }">
                     <form id="form-setting-{{ $setting->id }}" method="POST" action="{{ route('admin.settings.update', $setting) }}" class="space-y-4">
                         @csrf
                         @method('PUT')
@@ -94,11 +136,7 @@
                                         {{ $setting->label }}
                                     </h2>
                                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold whitespace-nowrap {{ $setting->days_before_due > 0 ? 'bg-blue-50 text-blue-700 border border-blue-200' : ($setting->days_before_due === 0 ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-rose-50 text-rose-700 border border-rose-200') }}">
-                                        {{ $setting->days_before_due > 0 ? 'H-' . $setting->days_before_due : ($setting->days_before_due === 0 ? 'Due Date' : 'Overdue +' . abs($setting->days_before_due) . 'd') }}
-                                    </span>
-                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200/80 whitespace-nowrap">
-                                        <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                        {{ $setting->scheduleLabel() }}
+                                        {{ $setting->days_before_due > 0 ? 'H-' . $setting->days_before_due : ($setting->days_before_due === 0 ? 'Due Date (H-0)' : 'Overdue +' . abs($setting->days_before_due) . 'd') }}
                                     </span>
                                 </div>
                                 <span class="text-[11px] text-slate-400 block mt-0.5">
@@ -127,32 +165,6 @@
                                 <label class="block font-semibold text-slate-700 mb-1.5">Days Before Due Date</label>
                                 <input type="number" name="days_before_due" value="{{ $setting->days_before_due }}" required class="w-full text-xs rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 focus:border-slate-400 focus:ring-slate-400">
                                 <p class="text-[10px] text-slate-400 mt-1">Negative numbers = overdue follow-ups</p>
-                            </div>
-                        </div>
-
-                        <!-- Schedule Execution Timing -->
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs p-3.5 bg-slate-50/80 rounded-xl border border-slate-200/70">
-                            <div>
-                                <label class="block font-semibold text-slate-700 mb-1.5">Schedule</label>
-                                <select name="schedule_frequency" x-model="frequency" class="w-full text-xs rounded-xl border-slate-200 bg-white text-slate-900 focus:border-slate-400 focus:ring-slate-400">
-                                    <option value="daily">Daily</option>
-                                    <option value="weekly">Weekly</option>
-                                </select>
-                            </div>
-
-                            <div x-show="frequency === 'weekly'">
-                                <label class="block font-semibold text-slate-700 mb-1.5">Day of Week</label>
-                                <select name="schedule_day" class="w-full text-xs rounded-xl border-slate-200 bg-white text-slate-900 focus:border-slate-400 focus:ring-slate-400">
-                                    @foreach($daysOfWeek as $num => $dayName)
-                                        <option value="{{ $num }}" {{ ($setting->schedule_day == $num) ? 'selected' : '' }}>{{ $dayName }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <div :class="frequency === 'weekly' ? '' : 'sm:col-span-2'">
-                                <label class="block font-semibold text-slate-700 mb-1.5">Dispatch Time (WIB)</label>
-                                <input type="time" name="dispatch_time" value="{{ $setting->dispatch_time ?: '07:00' }}" required class="w-full text-xs rounded-xl border-slate-200 bg-white text-slate-900 focus:border-slate-400 focus:ring-slate-400">
-                                <p class="text-[10px] text-slate-400 mt-1">Exact time to trigger this wave</p>
                             </div>
                         </div>
 
@@ -279,7 +291,7 @@
                     <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                         <div>
                             <h3 class="text-base font-bold text-slate-900" id="modal-title">Create New Reminder Wave</h3>
-                            <p class="text-xs text-slate-500 mt-0.5">Configure an automated schedule rule, execution time, and delivery channels</p>
+                            <p class="text-xs text-slate-500 mt-0.5">Configure a due-date offset rule, delivery channels, and custom message template</p>
                         </div>
                         <button 
                             type="button" 
@@ -290,7 +302,7 @@
                         </button>
                     </div>
 
-                    <form method="POST" action="{{ route('admin.settings.store') }}" class="space-y-4" x-data="{ modalFrequency: 'daily' }">
+                    <form method="POST" action="{{ route('admin.settings.store') }}" class="space-y-4">
                         @csrf
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
@@ -303,32 +315,6 @@
                                 <label class="block font-semibold text-slate-700 mb-1.5">Days Before Due Date <span class="text-rose-500">*</span></label>
                                 <input type="number" name="days_before_due" placeholder="e.g. 14, 0, or -14" required class="w-full text-xs rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 focus:border-slate-400 focus:ring-slate-400">
                                 <p class="text-[10px] text-slate-400 mt-1">Use negative values for overdue days</p>
-                            </div>
-                        </div>
-
-                        <!-- Schedule Execution Timing in Modal -->
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs p-3.5 bg-slate-50/80 rounded-xl border border-slate-200/70">
-                            <div>
-                                <label class="block font-semibold text-slate-700 mb-1.5">Schedule <span class="text-rose-500">*</span></label>
-                                <select name="schedule_frequency" x-model="modalFrequency" class="w-full text-xs rounded-xl border-slate-200 bg-white text-slate-900 focus:border-slate-400 focus:ring-slate-400">
-                                    <option value="daily">Daily</option>
-                                    <option value="weekly">Weekly</option>
-                                </select>
-                            </div>
-
-                            <div x-show="modalFrequency === 'weekly'">
-                                <label class="block font-semibold text-slate-700 mb-1.5">Day of Week</label>
-                                <select name="schedule_day" class="w-full text-xs rounded-xl border-slate-200 bg-white text-slate-900 focus:border-slate-400 focus:ring-slate-400">
-                                    @foreach($daysOfWeek as $num => $dayName)
-                                        <option value="{{ $num }}">{{ $dayName }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <div :class="modalFrequency === 'weekly' ? '' : 'sm:col-span-2'">
-                                <label class="block font-semibold text-slate-700 mb-1.5">Dispatch Time (WIB) <span class="text-rose-500">*</span></label>
-                                <input type="time" name="dispatch_time" value="07:00" required class="w-full text-xs rounded-xl border-slate-200 bg-white text-slate-900 focus:border-slate-400 focus:ring-slate-400">
-                                <p class="text-[10px] text-slate-400 mt-1">e.g. 07:00 or 12:00</p>
                             </div>
                         </div>
 

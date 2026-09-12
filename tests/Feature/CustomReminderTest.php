@@ -50,10 +50,34 @@ class CustomReminderTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('Reminder Wave Settings');
+        $response->assertSee('Automated Daily Schedule');
         $response->assertSee('Add Custom Wave');
         $response->assertSee('H-7 Test Wave');
         $response->assertSee('{sponsor_name}');
         $response->assertSee('Create New Reminder Wave');
+    }
+
+    public function test_super_admin_can_update_automated_daily_schedule_time(): void
+    {
+        $response = $this->actingAs($this->superAdmin)
+            ->put(route('admin.settings.schedule-time'), [
+                'reminder_dispatch_time' => '08:30',
+            ]);
+
+        $response->assertRedirect(route('admin.settings.index'));
+        $response->assertSessionHas('success');
+
+        $this->assertSame('08:30', \App\Models\PlatformSetting::get('reminder_dispatch_time'));
+    }
+
+    public function test_super_admin_cannot_set_invalid_schedule_time(): void
+    {
+        $response = $this->actingAs($this->superAdmin)
+            ->put(route('admin.settings.schedule-time'), [
+                'reminder_dispatch_time' => '25:99',
+            ]);
+
+        $response->assertSessionHasErrors(['reminder_dispatch_time']);
     }
 
     public function test_sponsor_show_page_renders_with_custom_reminder_modal(): void
@@ -88,9 +112,6 @@ class CustomReminderTest extends TestCase
                 'days_before_due' => 14,
                 'channels' => ['whatsapp', 'email'],
                 'is_active' => '1',
-                'schedule_frequency' => 'weekly',
-                'schedule_day' => 1, // Monday
-                'dispatch_time' => '12:00',
                 'message_template' => 'Hello {sponsor_name}, your contribution of {amount} is due on {due_date}.',
             ]);
 
@@ -101,22 +122,17 @@ class CustomReminderTest extends TestCase
             'label' => 'H-14 Early Wave',
             'days_before_due' => 14,
             'is_active' => true,
-            'schedule_frequency' => 'weekly',
-            'schedule_day' => 1,
-            'dispatch_time' => '12:00',
             'message_template' => 'Hello {sponsor_name}, your contribution of {amount} is due on {due_date}.',
         ]);
     }
 
-    public function test_super_admin_can_update_reminder_wave_template_and_timing(): void
+    public function test_super_admin_can_update_reminder_wave_template_and_channels(): void
     {
         $setting = ReminderSetting::create([
             'label' => 'H-7 Test Wave',
             'days_before_due' => 7,
             'channels' => ['email'],
             'is_active' => true,
-            'schedule_frequency' => 'daily',
-            'dispatch_time' => '07:00',
         ]);
 
         $response = $this->actingAs($this->superAdmin)
@@ -125,8 +141,6 @@ class CustomReminderTest extends TestCase
                 'days_before_due' => 7,
                 'channels' => ['email', 'whatsapp'],
                 'is_active' => '1',
-                'schedule_frequency' => 'daily',
-                'dispatch_time' => '07:30',
                 'message_template' => 'Custom template for {sponsor_name}: {amount} due on {due_date}.',
             ]);
 
@@ -135,7 +149,6 @@ class CustomReminderTest extends TestCase
         $this->assertDatabaseHas('reminder_settings', [
             'id' => $setting->id,
             'label' => 'H-7 Updated Wave',
-            'dispatch_time' => '07:30',
             'message_template' => 'Custom template for {sponsor_name}: {amount} due on {due_date}.',
         ]);
     }

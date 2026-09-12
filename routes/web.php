@@ -37,8 +37,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/settings/platform/logo', [\App\Http\Controllers\Admin\PlatformSettingController::class, 'resetLogo'])->name('admin.settings.platform.reset-logo');
         Route::delete('/settings/platform/favicon', [\App\Http\Controllers\Admin\PlatformSettingController::class, 'resetFavicon'])->name('admin.settings.platform.reset-favicon');
 
-        // Reminder Waves
+        // Reminder Waves & Dispatch Engine
         Route::get('/settings/reminders', [\App\Http\Controllers\Admin\ReminderSettingController::class, 'index'])->name('admin.settings.index');
+        Route::put('/settings/reminders/schedule-time', [\App\Http\Controllers\Admin\ReminderSettingController::class, 'updateScheduleTime'])->name('admin.settings.schedule-time');
         Route::post('/settings/reminders', [\App\Http\Controllers\Admin\ReminderSettingController::class, 'store'])->name('admin.settings.store');
         Route::put('/settings/reminders/{setting}', [\App\Http\Controllers\Admin\ReminderSettingController::class, 'update'])->name('admin.settings.update');
         Route::delete('/settings/reminders/{setting}', [\App\Http\Controllers\Admin\ReminderSettingController::class, 'destroy'])->name('admin.settings.destroy');

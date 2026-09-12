@@ -17,42 +17,13 @@ class ReminderSetting extends Model
         'label',
         'message_template',
         'is_active',
-        'schedule_frequency',
-        'schedule_day',
-        'dispatch_time',
     ];
 
     protected $casts = [
         'days_before_due' => 'integer',
         'channels' => 'array',
         'is_active' => 'boolean',
-        'schedule_day' => 'integer',
     ];
-
-    public static function daysOfWeek(): array
-    {
-        return [
-            1 => 'Monday',
-            2 => 'Tuesday',
-            3 => 'Wednesday',
-            4 => 'Thursday',
-            5 => 'Friday',
-            6 => 'Saturday',
-            7 => 'Sunday',
-        ];
-    }
-
-    public function scheduleLabel(): string
-    {
-        $time = $this->dispatch_time ?: '07:00';
-        if ($this->schedule_frequency === 'weekly') {
-            $days = self::daysOfWeek();
-            $dayName = $days[$this->schedule_day] ?? 'Monday';
-            return "Every {$dayName} at {$time}";
-        }
-
-        return "Daily at {$time}";
-    }
 
     public function reminderLogs(): HasMany
     {
