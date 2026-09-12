@@ -27,6 +27,10 @@
                         <x-nav-link :href="route('admin.settings.index')" :active="request()->routeIs('admin.settings.*')">
                             {{ __('Gelombang Reminder') }}
                         </x-nav-link>
+
+                        <x-nav-link :href="route('admin.custom-reminders.index')" :active="request()->routeIs('admin.custom-reminders.*')">
+                            {{ __('Custom Reminders') }}
+                        </x-nav-link>
                     @endif
 
                     <x-nav-link :href="route('admin.logs.index')" :active="request()->routeIs('admin.logs.*')">
@@ -99,6 +103,10 @@
             @if(Auth::user()->isSuperAdmin())
                 <x-responsive-nav-link :href="route('admin.settings.index')" :active="request()->routeIs('admin.settings.*')">
                     {{ __('Gelombang Reminder') }}
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('admin.custom-reminders.index')" :active="request()->routeIs('admin.custom-reminders.*')">
+                    {{ __('Custom Reminders') }}
                 </x-responsive-nav-link>
             @endif
 

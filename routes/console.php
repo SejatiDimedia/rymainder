@@ -25,3 +25,18 @@ Schedule::command('reminders:send')
     ->timezone(config('app.timezone', 'Asia/Jakarta'))
     ->withoutOverlapping()
     ->runInBackground();
+
+/*
+|--------------------------------------------------------------------------
+| Custom Scheduled Reminders
+|--------------------------------------------------------------------------
+|
+| Periodically checks and triggers active custom reminders (hourly, multi-daily, etc.)
+| based on their individual next_run_at calculation.
+|
+*/
+Schedule::command('custom-reminders:run')
+    ->everyMinute()
+    ->timezone(config('app.timezone', 'Asia/Jakarta'))
+    ->withoutOverlapping()
+    ->runInBackground();

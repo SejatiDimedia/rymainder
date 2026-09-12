@@ -62,6 +62,16 @@ class Sponsor extends Model
         return $this->hasMany(ReminderLog::class)->orderByDesc('created_at');
     }
 
+    public function customReminders(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(\App\Domain\Reminder\Models\CustomReminder::class, 'custom_reminder_sponsor');
+    }
+
+    public function isOverdue(?\Carbon\CarbonInterface $referenceDate = null): bool
+    {
+        return $this->getDueStatus($referenceDate) === 'overdue';
+    }
+
     /**
      * Check if a specific channel is enabled for this sponsor.
      */

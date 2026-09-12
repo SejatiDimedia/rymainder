@@ -17,6 +17,7 @@ class ReminderLog extends Model
         'sponsor_id',
         'due_date',
         'reminder_setting_id',
+        'custom_reminder_id',
         'channel',
         'is_manual',
         'status',
@@ -41,5 +42,10 @@ class ReminderLog extends Model
     public function reminderSetting(): BelongsTo
     {
         return $this->belongsTo(ReminderSetting::class);
+    }
+
+    public function customReminder(): BelongsTo
+    {
+        return $this->belongsTo(CustomReminder::class);
     }
 }

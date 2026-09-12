@@ -43,6 +43,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/settings/reminders', [\App\Http\Controllers\Admin\ReminderSettingController::class, 'store'])->name('admin.settings.store');
         Route::put('/settings/reminders/{setting}', [\App\Http\Controllers\Admin\ReminderSettingController::class, 'update'])->name('admin.settings.update');
         Route::delete('/settings/reminders/{setting}', [\App\Http\Controllers\Admin\ReminderSettingController::class, 'destroy'])->name('admin.settings.destroy');
+
+        // Standalone Custom Reminders
+        Route::resource('custom-reminders', \App\Http\Controllers\Admin\CustomReminderController::class)->names([
+            'index' => 'admin.custom-reminders.index',
+            'create' => 'admin.custom-reminders.create',
+            'store' => 'admin.custom-reminders.store',
+            'edit' => 'admin.custom-reminders.edit',
+            'update' => 'admin.custom-reminders.update',
+            'destroy' => 'admin.custom-reminders.destroy',
+        ]);
+        Route::patch('/custom-reminders/{customReminder}/toggle', [\App\Http\Controllers\Admin\CustomReminderController::class, 'toggle'])->name('admin.custom-reminders.toggle');
+        Route::post('/custom-reminders/{customReminder}/run-now', [\App\Http\Controllers\Admin\CustomReminderController::class, 'runNow'])->name('admin.custom-reminders.run-now');
     });
 
     // Global Reminder Audit Logs
