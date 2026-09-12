@@ -28,8 +28,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
         'destroy' => 'admin.sponsors.destroy',
     ]);
 
-    // Reminder Settings / Waves (Restricted to Super Admin)
+    // Platform & Reminder Settings (Restricted to Super Admin)
     Route::middleware('role:super_admin')->group(function () {
+        // Platform & Branding
+        Route::get('/settings/platform', [\App\Http\Controllers\Admin\PlatformSettingController::class, 'index'])->name('admin.settings.platform');
+        Route::put('/settings/platform', [\App\Http\Controllers\Admin\PlatformSettingController::class, 'update'])->name('admin.settings.platform.update');
+        Route::delete('/settings/platform/logo', [\App\Http\Controllers\Admin\PlatformSettingController::class, 'resetLogo'])->name('admin.settings.platform.reset-logo');
+        Route::delete('/settings/platform/favicon', [\App\Http\Controllers\Admin\PlatformSettingController::class, 'resetFavicon'])->name('admin.settings.platform.reset-favicon');
+
+        // Reminder Waves
         Route::get('/settings/reminders', [\App\Http\Controllers\Admin\ReminderSettingController::class, 'index'])->name('admin.settings.index');
         Route::put('/settings/reminders/{setting}', [\App\Http\Controllers\Admin\ReminderSettingController::class, 'update'])->name('admin.settings.update');
     });

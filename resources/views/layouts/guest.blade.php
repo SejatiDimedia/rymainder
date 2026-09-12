@@ -5,8 +5,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Rymainder') }} - Authentication</title>
-        <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
+        <title>{{ $platformName }} - Authentication</title>
+        <link rel="icon" type="image/png" href="{{ $platformFavicon }}">
 
         <!-- Google / Bunny Fonts: Inter -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -21,11 +21,11 @@
             <div class="flex flex-col items-center justify-center">
                 <a href="/" class="flex items-center gap-3.5 group">
                     <div class="w-12 h-12 rounded-2xl overflow-hidden shadow-md ring-1 ring-slate-900/10 group-hover:scale-105 transition-transform duration-200 shrink-0 bg-black">
-                        <img src="{{ asset('images/logo.png') }}" alt="Rymainder Logo" class="w-full h-full object-cover">
+                        <img src="{{ $platformLogo }}" alt="{{ $platformName }} Logo" class="w-full h-full object-cover">
                     </div>
                     <div class="flex flex-col">
-                        <span class="font-bold text-slate-900 tracking-tight text-2xl leading-none">Rymainder</span>
-                        <span class="text-[11px] font-semibold text-indigo-600 tracking-wider uppercase mt-1">Pledge Cloud Platform</span>
+                        <span class="font-bold text-slate-900 tracking-tight text-2xl leading-none">{{ $platformName }}</span>
+                        <span class="text-[11px] font-semibold text-indigo-600 tracking-wider uppercase mt-1">{{ $platformTagline }}</span>
                     </div>
                 </a>
                 <p class="text-xs text-slate-500 mt-2.5 text-center max-w-xs">
@@ -41,7 +41,7 @@
 
             <!-- Footer -->
             <div class="mt-6 text-center text-xs text-slate-400">
-                &copy; {{ date('Y') }} Rymainder. All rights reserved.
+                &copy; {{ date('Y') }} {{ $platformName }}. All rights reserved.
             </div>
         </div>
     </body>

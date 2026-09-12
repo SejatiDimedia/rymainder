@@ -17,6 +17,16 @@
             </div>
         @endif
 
+        <!-- Sub-Navigation Tabs: Platform Branding | Reminder Waves -->
+        <div class="flex items-center gap-1 p-1 bg-slate-200/50 rounded-xl w-fit text-xs">
+            <a href="{{ route('admin.settings.platform') }}" class="px-4 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 font-medium transition">
+                Platform & Branding
+            </a>
+            <span class="px-4 py-1.5 rounded-lg bg-white font-semibold text-slate-900 shadow-xs cursor-default">
+                Reminder Waves
+            </span>
+        </div>
+
         <!-- Info Guide Card -->
         <div class="p-5 bg-indigo-50/70 border border-indigo-100 rounded-2xl text-xs text-indigo-950 leading-relaxed shadow-xs">
             <div class="font-bold mb-1.5 flex items-center gap-2 text-indigo-900">

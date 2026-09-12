@@ -10,9 +10,9 @@
     <div class="p-4 flex flex-col h-full">
         <!-- Logo Header -->
         <div class="flex items-center justify-between pb-6" :class="sidebarCollapsed ? 'lg:justify-center' : ''">
-            <a href="{{ route('dashboard') }}" class="flex items-center gap-3 group" :title="sidebarCollapsed ? 'Rymainder' : ''">
+            <a href="{{ route('dashboard') }}" class="flex items-center gap-3 group" :title="sidebarCollapsed ? '{{ $platformName }}' : ''">
                 <div class="w-9 h-9 rounded-xl overflow-hidden shadow-xs ring-1 ring-slate-900/10 group-hover:scale-105 transition-transform duration-200 shrink-0 bg-black">
-                    <img src="{{ asset('images/logo.png') }}" alt="Rymainder Logo" class="w-full h-full object-cover">
+                    <img src="{{ $platformLogo }}" alt="{{ $platformName }} Logo" class="w-full h-full object-cover">
                 </div>
                 <div 
                     x-show="!sidebarCollapsed" 
@@ -20,10 +20,10 @@
                     class="flex flex-col"
                 >
                     <span class="font-bold text-slate-900 tracking-tight text-base whitespace-nowrap leading-tight">
-                        Rymainder
+                        {{ $platformName }}
                     </span>
                     <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
-                        Pledge Cloud
+                        {{ $platformTagline }}
                     </span>
                 </div>
             </a>
@@ -104,15 +104,30 @@
             @if(Auth::user()->isSuperAdmin())
                 <a 
                     href="{{ route('admin.settings.index') }}" 
-                    class="flex items-center gap-3 rounded-xl text-sm transition duration-150 {{ request()->routeIs('admin.settings.*') ? 'bg-slate-100/90 text-slate-900 font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50 font-medium' }}"
+                    class="flex items-center gap-3 rounded-xl text-sm transition duration-150 {{ request()->routeIs('admin.settings.index') ? 'bg-slate-100/90 text-slate-900 font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50 font-medium' }}"
                     :class="sidebarCollapsed ? 'lg:justify-center lg:px-2.5 py-2.5 px-3.5' : 'px-3.5 py-2.5'"
                     :title="sidebarCollapsed ? 'Reminder Waves' : ''"
                 >
-                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('admin.settings.*') ? 'text-slate-900' : 'text-slate-400' }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('admin.settings.index') ? 'text-slate-900' : 'text-slate-400' }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <rect x="2" y="5" width="20" height="14" rx="2"></rect>
                         <line x1="2" y1="10" x2="22" y2="10"></line>
                     </svg>
                     <span x-show="!sidebarCollapsed" x-transition.opacity class="whitespace-nowrap">Reminder Waves</span>
+                </a>
+
+                <!-- Platform Branding (Super Admin only) -->
+                <a 
+                    href="{{ route('admin.settings.platform') }}" 
+                    class="flex items-center gap-3 rounded-xl text-sm transition duration-150 {{ request()->routeIs('admin.settings.platform') ? 'bg-slate-100/90 text-slate-900 font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50 font-medium' }}"
+                    :class="sidebarCollapsed ? 'lg:justify-center lg:px-2.5 py-2.5 px-3.5' : 'px-3.5 py-2.5'"
+                    :title="sidebarCollapsed ? 'Platform Branding' : ''"
+                >
+                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('admin.settings.platform') ? 'text-slate-900' : 'text-slate-400' }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                        <path d="M2 17l10 5 10-5"></path>
+                        <path d="M2 12l10 5 10-5"></path>
+                    </svg>
+                    <span x-show="!sidebarCollapsed" x-transition.opacity class="whitespace-nowrap">Platform Branding</span>
                 </a>
             @endif
 
