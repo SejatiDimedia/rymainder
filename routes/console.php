@@ -17,8 +17,10 @@ Artisan::command('inspire', function () {
 | and dispatches queue jobs for Email, WhatsApp, and Telegram reminders.
 |
 */
+$dispatchTime = env('REMINDER_DISPATCH_TIME', '07:00');
+
 Schedule::command('reminders:send')
-    ->dailyAt('08:00')
+    ->dailyAt($dispatchTime)
     ->timezone(config('app.timezone', 'Asia/Jakarta'))
     ->withoutOverlapping()
     ->runInBackground();
