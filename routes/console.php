@@ -1,0 +1,24 @@
+<?php
+
+use Illuminate\Foundation\Inspiring;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Schedule;
+
+Artisan::command('inspire', function () {
+    $this->comment(Inspiring::quote());
+})->purpose('Display an inspiring quote');
+
+/*
+|--------------------------------------------------------------------------
+| Automated Sponsor Reminder Daily Schedule
+|--------------------------------------------------------------------------
+|
+| Evaluates all active sponsors daily at 08:00 WIB, matches active waves,
+| and dispatches queue jobs for Email, WhatsApp, and Telegram reminders.
+|
+*/
+Schedule::command('reminders:send')
+    ->dailyAt('08:00')
+    ->timezone(config('app.timezone', 'Asia/Jakarta'))
+    ->withoutOverlapping()
+    ->runInBackground();
