@@ -144,10 +144,10 @@ class CustomReminderController extends Controller
 
     public function runNow(CustomReminder $customReminder, DispatchCustomReminderAction $dispatchAction): RedirectResponse
     {
-        $count = $dispatchAction->execute($customReminder);
+        $count = $dispatchAction->execute($customReminder, sync: true);
 
         return redirect()->route('admin.custom-reminders.index')
-            ->with('success', "Custom reminder '{$customReminder->title}' queued for dispatch to {$count} targeted sponsor(s)!");
+            ->with('success', "Custom reminder '{$customReminder->title}' successfully dispatched to {$count} targeted sponsor(s)!");
     }
 
     private function resolveScheduleTimes($request): ?array
