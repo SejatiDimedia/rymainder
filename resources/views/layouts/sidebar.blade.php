@@ -4,7 +4,7 @@
         sidebarCollapsed ? 'lg:w-20' : 'lg:w-64',
         sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
     ]"
-    class="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200/80 flex flex-col justify-between transition-all duration-200 ease-in-out lg:static lg:inset-auto lg:translate-x-0 shrink-0 select-none"
+    class="fixed inset-y-0 left-0 z-50 w-64 h-full bg-white border-r border-slate-200/80 flex flex-col justify-between transition-all duration-200 ease-in-out lg:static lg:h-screen lg:shrink-0 select-none overflow-y-auto"
 >
     <!-- Brand & Top Navigation -->
     <div class="p-4 flex flex-col h-full">

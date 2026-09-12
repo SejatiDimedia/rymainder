@@ -17,19 +17,19 @@
             [x-cloak] { display: none !important; }
         </style>
     </head>
-    <body class="font-sans antialiased bg-[#f8f9fc] text-slate-800 h-full">
+    <body class="font-sans antialiased bg-[#f8f9fc] text-slate-800 h-screen overflow-hidden">
         <div 
             x-data="{ 
                 sidebarOpen: false, 
                 sidebarCollapsed: localStorage.getItem('sidebar_collapsed') === 'true' 
             }" 
-            class="min-h-screen flex"
+            class="h-screen w-full flex overflow-hidden"
         >
-            <!-- Left Sidebar Navigation (Supports Resize / Collapse) -->
+            <!-- Left Sidebar Navigation (Supports Resize / Collapse & Fixed Position) -->
             @include('layouts.sidebar')
 
-            <!-- Main Content Canvas (Expanded Full-Width Panel) -->
-            <div class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+            <!-- Main Content Canvas (Expanded Full-Width Panel, Independently Scrollable) -->
+            <div class="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto">
                 <!-- Top Header Bar -->
                 <header class="sticky top-0 z-30 bg-[#f8f9fc]/90 backdrop-blur-md border-b border-slate-200/70 px-4 sm:px-8 lg:px-10 py-3.5 flex items-center justify-between">
                     <!-- Left: Mobile Menu Trigger + Page Title -->
