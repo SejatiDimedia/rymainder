@@ -75,7 +75,8 @@ class SendSponsorReminderJob implements ShouldQueue
             sponsor: $sponsor,
             dueDate: $dueDate,
             waveLabel: $setting->label,
-            daysDifference: $daysDiff
+            daysDifference: $daysDiff,
+            customTemplate: $setting->message_template,
         );
 
         // 3. Dispatch via pluggable channel driver

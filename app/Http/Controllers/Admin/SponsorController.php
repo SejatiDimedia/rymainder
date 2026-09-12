@@ -91,13 +91,17 @@ class SponsorController extends Controller
 
         $logs = $sponsor->reminderLogs()
             ->with('reminderSetting')
+            ->latest('id')
             ->paginate(15);
+
+        $settings = \App\Domain\Reminder\Models\ReminderSetting::orderByDesc('days_before_due')->get();
 
         return view('admin.sponsors.show', [
             'sponsor' => $sponsor,
             'nextDue' => $nextDue,
             'daysDiff' => $daysDiff,
             'logs' => $logs,
+            'settings' => $settings,
             'telegramOnboardUrl' => $sponsor->getTelegramOnboardingUrl(),
         ]);
     }

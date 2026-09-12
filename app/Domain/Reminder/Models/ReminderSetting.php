@@ -15,6 +15,7 @@ class ReminderSetting extends Model
         'days_before_due',
         'channels',
         'label',
+        'message_template',
         'is_active',
     ];
 

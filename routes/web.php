@@ -27,6 +27,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         'update' => 'admin.sponsors.update',
         'destroy' => 'admin.sponsors.destroy',
     ]);
+    Route::post('/sponsors/{sponsor}/send-reminder', [\App\Http\Controllers\Admin\ManualReminderController::class, 'send'])->name('admin.sponsors.send-reminder');
 
     // Platform & Reminder Settings (Restricted to Super Admin)
     Route::middleware('role:super_admin')->group(function () {
@@ -38,7 +39,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // Reminder Waves
         Route::get('/settings/reminders', [\App\Http\Controllers\Admin\ReminderSettingController::class, 'index'])->name('admin.settings.index');
+        Route::post('/settings/reminders', [\App\Http\Controllers\Admin\ReminderSettingController::class, 'store'])->name('admin.settings.store');
         Route::put('/settings/reminders/{setting}', [\App\Http\Controllers\Admin\ReminderSettingController::class, 'update'])->name('admin.settings.update');
+        Route::delete('/settings/reminders/{setting}', [\App\Http\Controllers\Admin\ReminderSettingController::class, 'destroy'])->name('admin.settings.destroy');
     });
 
     // Global Reminder Audit Logs
