@@ -11,7 +11,7 @@
         <!-- Logo Header -->
         <div class="flex items-center justify-between pb-6" :class="sidebarCollapsed ? 'lg:justify-center' : ''">
             <a href="{{ route('dashboard') }}" class="flex items-center gap-3 group" :title="sidebarCollapsed ? 'Rymainder' : ''">
-                <div class="w-9 h-9 rounded-xl overflow-hidden shadow-xs ring-1 ring-slate-200/60 group-hover:scale-105 transition-transform duration-200 shrink-0 bg-slate-950">
+                <div class="w-9 h-9 rounded-xl overflow-hidden shadow-xs ring-1 ring-slate-900/10 group-hover:scale-105 transition-transform duration-200 shrink-0 bg-black">
                     <img src="{{ asset('images/logo.png') }}" alt="Rymainder Logo" class="w-full h-full object-cover">
                 </div>
                 <div 

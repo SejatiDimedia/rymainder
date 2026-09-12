@@ -20,7 +20,7 @@
             <!-- Brand Logo matching reference -->
             <div class="flex flex-col items-center justify-center">
                 <a href="/" class="flex items-center gap-3.5 group">
-                    <div class="w-12 h-12 rounded-2xl overflow-hidden shadow-md ring-1 ring-slate-200/80 group-hover:scale-105 transition-transform duration-200 shrink-0 bg-slate-950">
+                    <div class="w-12 h-12 rounded-2xl overflow-hidden shadow-md ring-1 ring-slate-900/10 group-hover:scale-105 transition-transform duration-200 shrink-0 bg-black">
                         <img src="{{ asset('images/logo.png') }}" alt="Rymainder Logo" class="w-full h-full object-cover">
                     </div>
                     <div class="flex flex-col">
