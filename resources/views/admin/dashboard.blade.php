@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div>
             <h1 class="text-xl font-bold text-slate-900 tracking-tight">Dashboard Monitoring Reminder</h1>
-            <p class="text-xs text-slate-500 mt-0.5">Ringkasan status jatuh tempo donasi dan audit pengiriman reminder harian</p>
+            <p class="text-xs text-slate-500 mt-0.5">Automated donation due dates overview & multi-channel reminder audits</p>
         </div>
     </x-slot>
 
@@ -16,22 +16,22 @@
             </div>
         @endif
 
-        <!-- 1. Top Sub-Navigation Tabs matching reference (Billing | Payment) -->
+        <!-- 1. Top Sub-Navigation Tabs (Overview | Sponsors | Delivery Logs) -->
         <div class="flex items-center gap-1 p-1 bg-slate-200/50 rounded-xl w-fit text-xs">
             <span class="px-4 py-1.5 rounded-lg bg-white font-semibold text-slate-900 shadow-xs cursor-default">
-                Ringkasan Utama
+                Overview
             </span>
             <a href="{{ route('admin.sponsors.index') }}" class="px-4 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 font-medium transition">
-                Data Sponsor
+                Sponsors
             </a>
             <a href="{{ route('admin.logs.index') }}" class="px-4 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 font-medium transition">
-                Audit Log
+                Delivery Logs
             </a>
         </div>
 
-        <!-- 2. Alert Notification Banner matching reference -->
-        <div class="bg-indigo-50/70 border border-indigo-100 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
-            <div class="flex items-center gap-3">
+        <!-- 2. Alert Notification Banner: Strictly 1 Line Text -->
+        <div class="bg-indigo-50/70 border border-indigo-100 rounded-2xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-xs">
+            <div class="flex items-center gap-3 min-w-0 flex-1 overflow-hidden">
                 <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 shrink-0">
                     <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="12" r="10"></circle>
@@ -39,47 +39,45 @@
                         <line x1="12" y1="16" x2="12.01" y2="16"></line>
                     </svg>
                 </div>
-                <div class="text-xs text-indigo-950">
-                    <span class="font-semibold">Scheduler otomatis aktif:</span> Pengiriman reminder berjalan harian setiap pukul <strong>08:00 WIB</strong> (Waktu Server: {{ now()->format('H:i:s T') }}).
+                <!-- Strictly 1 line truncate -->
+                <div class="text-xs text-indigo-950 truncate whitespace-nowrap">
+                    <span class="font-semibold">Automated scheduler active:</span> Daily reminder queue executes at <strong>08:00 WIB</strong> (Server Time: {{ now()->format('H:i T') }}).
                 </div>
             </div>
 
-            <div class="flex items-center gap-2">
-                <form method="POST" action="{{ route('admin.sponsors.index') }}">
-                    @csrf
-                    <a 
-                        href="{{ route('admin.sponsors.index') }}" 
-                        class="inline-flex items-center justify-center px-4 py-2 bg-white hover:bg-indigo-50 border border-indigo-200/80 rounded-xl text-xs font-semibold text-indigo-900 shadow-xs hover:border-indigo-300 transition active:scale-[0.98]"
-                    >
-                        Lihat Antrean Aktif
-                    </a>
-                </form>
+            <div class="shrink-0">
+                <a 
+                    href="{{ route('admin.sponsors.index') }}" 
+                    class="inline-flex items-center justify-center px-4 py-2 bg-white hover:bg-indigo-50 border border-indigo-200/80 rounded-xl text-xs font-semibold text-indigo-900 shadow-xs hover:border-indigo-300 transition active:scale-[0.98] whitespace-nowrap"
+                >
+                    View Active Queue
+                </a>
             </div>
         </div>
 
-        <!-- 3. Dual Hero KPI Cards matching reference (Your upcoming bills & Billings Info) -->
+        <!-- 3. Dual Hero KPI Cards -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             
-            <!-- Left Card: Your upcoming bills / Siklus Reminder & Donasi -->
+            <!-- Left Card: Active Donation Commitments -->
             <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs flex flex-col justify-between">
                 <div>
                     <!-- Card Top Bar -->
                     <div class="flex items-start justify-between">
                         <div>
-                            <h2 class="font-bold text-slate-900 text-sm">Komitmen Donasi Aktif</h2>
-                            <p class="text-xs text-slate-500 mt-0.5">Siklus tahunan & 6 bulanan terverifikasi</p>
+                            <h2 class="font-bold text-slate-900 text-sm">Active Donation Commitments</h2>
+                            <p class="text-xs text-slate-500 mt-0.5">Verified annual & 6-month cycles</p>
                         </div>
                         <div class="flex items-center gap-1.5">
                             <a 
                                 href="{{ route('admin.sponsors.create') }}" 
                                 class="inline-flex items-center px-3 py-1.5 rounded-xl border border-slate-200/90 text-xs font-medium text-slate-700 bg-white hover:bg-slate-50 shadow-xs transition"
                             >
-                                + Tambah
+                                + Add
                             </a>
                             <a 
                                 href="{{ route('admin.sponsors.index') }}" 
                                 class="w-8 h-8 rounded-xl border border-slate-200/90 flex items-center justify-center text-slate-500 hover:bg-slate-50 transition"
-                                title="Menu Sponsor"
+                                title="Manage Sponsors"
                             >
                                 <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <circle cx="12" cy="12" r="1"></circle>
@@ -90,44 +88,45 @@
                         </div>
                     </div>
 
-                    <!-- Big Metric Amount Display matching $70.00 USD -->
+                    <!-- Big Metric Amount Display -->
                     <div class="mt-5 mb-6 flex items-baseline gap-2">
                         <span class="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">
                             Rp {{ number_format($totalActiveAmount ?? 0, 0, ',', '.') }}
                         </span>
-                        <span class="text-xs font-medium text-slate-400">IDR / Siklus</span>
+                        <span class="text-xs font-medium text-slate-400">IDR / Cycle</span>
                     </div>
                 </div>
 
                 <!-- Bottom Details Bar inside card -->
                 <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
-                    <div class="flex items-center gap-2 text-xs font-semibold text-emerald-600">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                        <span>{{ $dueSoonCount }} Sponsor jatuh tempo ≤ 7 hari</span>
+                    <!-- Strictly 1 line status -->
+                    <div class="flex items-center gap-2 text-xs font-semibold text-emerald-600 whitespace-nowrap truncate">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+                        <span class="truncate">{{ $dueSoonCount }} Sponsors due in ≤ 7 days</span>
                     </div>
 
                     <a 
                         href="{{ route('admin.sponsors.index') }}" 
-                        class="inline-flex items-center px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold shadow-xs transition active:scale-[0.98]"
+                        class="inline-flex items-center px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold shadow-xs transition active:scale-[0.98] shrink-0 whitespace-nowrap"
                     >
-                        Kelola
+                        Manage
                     </a>
                 </div>
             </div>
 
-            <!-- Right Card: Billings Info / Channel Gateway Status -->
+            <!-- Right Card: Multi-Channel Gateway -->
             <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs flex flex-col justify-between">
                 <div>
                     <!-- Card Top Bar -->
                     <div class="flex items-start justify-between">
                         <div>
-                            <h2 class="font-bold text-slate-900 text-sm">Status Channel Notifikasi</h2>
-                            <p class="text-xs text-slate-500 mt-0.5">Integrasi gateway pengiriman pengingat</p>
+                            <h2 class="font-bold text-slate-900 text-sm">Multi-Channel Gateway</h2>
+                            <p class="text-xs text-slate-500 mt-0.5">Notification delivery status for WhatsApp, Telegram & Email</p>
                         </div>
                         <a 
                             href="{{ route('admin.settings.index') }}" 
                             class="w-8 h-8 rounded-xl border border-slate-200/90 flex items-center justify-center text-slate-500 hover:bg-slate-50 transition"
-                            title="Pengaturan Gelombang"
+                            title="Reminder Waves Settings"
                         >
                             <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <circle cx="12" cy="12" r="1"></circle>
@@ -137,74 +136,70 @@
                         </a>
                     </div>
 
-                    <!-- Visual Gateway Badge matching the dark VISA badge in reference -->
+                    <!-- Visual Gateway Badge: Strictly 1 Line -->
                     <div class="mt-4 mb-4">
-                        <div class="inline-flex items-center gap-3 px-3.5 py-2 rounded-xl bg-slate-900 text-white shadow-xs">
-                            <span class="text-[10px] font-bold tracking-widest uppercase bg-slate-800 px-2 py-0.5 rounded text-teal-400">
-                                MULTI-CHANNEL
+                        <div class="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-slate-900 text-white shadow-xs whitespace-nowrap max-w-full overflow-hidden">
+                            <span class="text-[10px] font-bold tracking-widest uppercase bg-slate-800 px-2 py-0.5 rounded text-emerald-400 shrink-0">
+                                READY
                             </span>
-                            <div class="flex items-center gap-2 text-xs text-slate-300">
-                                <span>WA Cloud</span>
-                                <span>•</span>
-                                <span>Telegram</span>
-                                <span>•</span>
-                                <span>Email</span>
-                            </div>
+                            <span class="text-xs text-slate-300 font-medium whitespace-nowrap truncate">
+                                WhatsApp Cloud • Telegram Bot • Email SMTP
+                            </span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Bottom Details Bar inside card -->
                 <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
-                    <div>
-                        <div class="text-xs font-semibold text-slate-800">
-                            {{ $activeWavesCount }} Gelombang Pengingat Aktif
+                    <div class="truncate mr-2">
+                        <div class="text-xs font-semibold text-slate-800 whitespace-nowrap truncate">
+                            {{ $activeWavesCount }} Active Reminder Waves
                         </div>
-                        <div class="text-[11px] text-slate-500">
-                            Hari ini: {{ $todaySentCount }} terkirim, {{ $todayFailedCount }} gagal
+                        <div class="text-[11px] text-slate-500 whitespace-nowrap truncate">
+                            Today: {{ $todaySentCount }} sent, {{ $todayFailedCount }} failed
                         </div>
                     </div>
 
                     @if(Auth::user()->isSuperAdmin())
                         <a 
                             href="{{ route('admin.settings.index') }}" 
-                            class="inline-flex items-center px-4 py-2 rounded-xl border border-slate-200/90 text-xs font-medium text-slate-700 bg-white hover:bg-slate-50 shadow-xs transition"
+                            class="inline-flex items-center px-4 py-2 rounded-xl border border-slate-200/90 text-xs font-medium text-slate-700 bg-white hover:bg-slate-50 shadow-xs transition shrink-0 whitespace-nowrap"
                         >
-                            Edit Gelombang
+                            Configure Waves
                         </a>
                     @else
-                        <span class="text-xs text-slate-400">Terkonfigurasi</span>
+                        <span class="text-xs text-slate-400 shrink-0 whitespace-nowrap">Configured</span>
                     @endif
                 </div>
             </div>
 
         </div>
 
-        <!-- 4. Main Inset Table Card matching "Invoices" in reference -->
+        <!-- 4. Main Inset Table Card -->
         <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs space-y-4">
             <!-- Header section of the table card -->
             <div class="flex items-center justify-between">
                 <div>
-                    <h2 class="font-bold text-slate-900 text-base">Prioritas Jatuh Tempo Terdekat</h2>
-                    <p class="text-xs text-slate-500 mt-0.5">Daftar sponsor yang dijadwalkan menerima reminder dalam waktu dekat</p>
+                    <h2 class="font-bold text-slate-900 text-base">Upcoming Due Reminders</h2>
+                    <p class="text-xs text-slate-500 mt-0.5">Sponsors scheduled to receive reminder notifications soon</p>
                 </div>
                 <a href="{{ route('admin.sponsors.index') }}" class="text-xs font-semibold text-blue-600 hover:text-blue-700 transition">
-                    Lihat Semua Sponsor →
+                    View All Sponsors →
                 </a>
             </div>
 
-            <!-- Inset Table with subtle rounded frame -->
+            <!-- Inset Table with rounded frame -->
             <div class="border border-slate-200/70 rounded-xl overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-xs">
                         <thead class="bg-slate-50/70 border-b border-slate-200/70 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
                             <tr>
-                                <th class="px-5 py-3">Sponsor & Anak Asuh</th>
-                                <th class="px-5 py-3">Frekuensi</th>
-                                <th class="px-5 py-3">Nominal Donasi</th>
-                                <th class="px-5 py-3">Tanggal Jatuh Tempo</th>
+                                <th class="px-5 py-3">Sponsor & Beneficiary</th>
+                                <th class="px-5 py-3">Frequency</th>
+                                <th class="px-5 py-3">Commitment</th>
+                                <th class="px-5 py-3">Target Due Date</th>
                                 <th class="px-5 py-3">Status</th>
-                                <th class="px-5 py-3 text-right">Aksi</th>
+                                <th class="px-5 py-3 text-right">Action</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
@@ -215,53 +210,53 @@
                                     $type = $item['status_type'];
                                 @endphp
                                 <tr class="hover:bg-slate-50/70 transition">
-                                    <!-- Sponsor & Anak Asuh -->
+                                    <!-- Sponsor & Beneficiary -->
                                     <td class="px-5 py-3.5">
                                         <div class="font-semibold text-slate-900 text-xs">{{ $s->name }}</div>
                                         <div class="text-[11px] text-slate-500 mt-0.5">
-                                            {{ $s->orphan_name ? 'Anak asuh: ' . $s->orphan_name : 'Program Reguler' }}
+                                            {{ $s->orphan_name ? 'Beneficiary: ' . $s->orphan_name : 'General Fund' }}
                                         </div>
                                     </td>
 
-                                    <!-- Frekuensi -->
-                                    <td class="px-5 py-3.5 text-slate-600">
-                                        <span class="inline-flex items-center px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-[11px] font-medium">
+                                    <!-- Frequency -->
+                                    <td class="px-5 py-3.5 text-slate-600 whitespace-nowrap">
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-[11px] font-medium whitespace-nowrap">
                                             {{ $s->frequency->label() }}
                                         </span>
                                     </td>
 
-                                    <!-- Amount matching "- $70" in reference -->
-                                    <td class="px-5 py-3.5 font-medium text-rose-600">
+                                    <!-- Amount -->
+                                    <td class="px-5 py-3.5 font-medium text-rose-600 whitespace-nowrap">
                                         - {{ $s->formatted_amount }}
                                     </td>
 
-                                    <!-- Billing Date matching "Mar 15, 2025 • 09.41 PM" in reference -->
-                                    <td class="px-5 py-3.5 text-slate-600">
+                                    <!-- Billing Date -->
+                                    <td class="px-5 py-3.5 text-slate-600 whitespace-nowrap">
                                         {{ $item['next_due']->translatedFormat('d M Y') }} • 08:00 WIB
                                     </td>
 
-                                    <!-- Status with leading bullet dot matching "● Paid" in reference -->
-                                    <td class="px-5 py-3.5">
+                                    <!-- Status with leading bullet dot (Strictly 1 Line) -->
+                                    <td class="px-5 py-3.5 whitespace-nowrap">
                                         @if($type === 'overdue')
-                                            <span class="inline-flex items-center gap-1.5 font-semibold text-rose-600 text-xs">
-                                                <span class="w-2 h-2 rounded-full bg-rose-500"></span>
-                                                Telat {{ abs($diff) }} hari
+                                            <span class="inline-flex items-center gap-1.5 font-semibold text-rose-600 text-xs whitespace-nowrap">
+                                                <span class="w-2 h-2 rounded-full bg-rose-500 shrink-0"></span>
+                                                Overdue by {{ abs($diff) }} days
                                             </span>
                                         @elseif($type === 'due_soon')
-                                            <span class="inline-flex items-center gap-1.5 font-semibold text-amber-600 text-xs">
-                                                <span class="w-2 h-2 rounded-full bg-amber-500"></span>
-                                                {{ $diff === 0 ? 'Hari ini' : $diff . ' hari lagi' }}
+                                            <span class="inline-flex items-center gap-1.5 font-semibold text-amber-600 text-xs whitespace-nowrap">
+                                                <span class="w-2 h-2 rounded-full bg-amber-500 shrink-0"></span>
+                                                {{ $diff === 0 ? 'Due today' : 'In ' . $diff . ' days' }}
                                             </span>
                                         @else
-                                            <span class="inline-flex items-center gap-1.5 font-semibold text-emerald-600 text-xs">
-                                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                                                {{ $diff }} hari lagi
+                                            <span class="inline-flex items-center gap-1.5 font-semibold text-emerald-600 text-xs whitespace-nowrap">
+                                                <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+                                                In {{ $diff }} days
                                             </span>
                                         @endif
                                     </td>
 
-                                    <!-- Aksi -->
-                                    <td class="px-5 py-3.5 text-right">
+                                    <!-- Action -->
+                                    <td class="px-5 py-3.5 text-right whitespace-nowrap">
                                         <a 
                                             href="{{ route('admin.sponsors.show', $s) }}" 
                                             class="inline-flex items-center px-2.5 py-1 text-xs font-medium rounded-lg border border-slate-200 text-slate-700 bg-white hover:bg-slate-50 transition shadow-2xs"
@@ -273,7 +268,7 @@
                             @empty
                                 <tr>
                                     <td colspan="6" class="px-5 py-8 text-center text-slate-400 text-xs">
-                                        Belum ada data sponsor aktif dalam antrean.
+                                        No active sponsors in the reminder queue currently.
                                     </td>
                                 </tr>
                             @endforelse
@@ -282,7 +277,7 @@
                 </div>
             </div>
 
-            <!-- Table Footer / Pagination matching reference (Show data 2 of 2, pill 1, Next ->) -->
+            <!-- Table Footer / Pagination -->
             <div class="flex items-center justify-between pt-2 text-xs text-slate-500">
                 <div>
                     Show data <span class="font-semibold text-slate-800">{{ count($prioritySponsors) }}</span> of <span class="font-semibold text-slate-800">{{ $totalActiveSponsors }}</span>
@@ -299,15 +294,15 @@
             </div>
         </div>
 
-        <!-- 5. Recent Activity Logs Section (Compact) -->
+        <!-- 5. Recent Delivery Activity Section -->
         <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs">
             <div class="flex items-center justify-between mb-4">
                 <div>
-                    <h2 class="font-bold text-slate-900 text-sm">Aktivitas Reminder Terbaru</h2>
-                    <p class="text-xs text-slate-500 mt-0.5">Audit pengiriman notifikasi terakhir oleh worker scheduler</p>
+                    <h2 class="font-bold text-slate-900 text-sm">Recent Delivery Activity</h2>
+                    <p class="text-xs text-slate-500 mt-0.5">Audit trail of latest notification dispatches by scheduler workers</p>
                 </div>
                 <a href="{{ route('admin.logs.index') }}" class="text-xs font-semibold text-blue-600 hover:text-blue-700 transition">
-                    Log Lengkap →
+                    All Logs →
                 </a>
             </div>
 
@@ -319,11 +314,11 @@
                                 <span class="font-semibold text-slate-800 truncate max-w-[130px]">
                                     {{ $log->sponsor->name ?? 'Sponsor' }}
                                 </span>
-                                <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium {{ $log->status->badgeClasses() }}">
+                                <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium whitespace-nowrap {{ $log->status->badgeClasses() }}">
                                     {{ $log->status->label() }}
                                 </span>
                             </div>
-                            <div class="mt-1.5 text-slate-500 text-[11px] flex items-center gap-1.5">
+                            <div class="mt-1.5 text-slate-500 text-[11px] flex items-center gap-1.5 whitespace-nowrap">
                                 <span class="font-medium text-slate-700">{{ $log->channel->label() }}</span>
                                 <span>•</span>
                                 <span>{{ $log->created_at->diffForHumans() }}</span>
@@ -338,7 +333,7 @@
                     </div>
                 @empty
                     <div class="col-span-4 text-center py-6 text-slate-400 text-xs">
-                        Belum ada catatan aktivitas reminder pengiriman.
+                        No recent delivery logs recorded.
                     </div>
                 @endforelse
             </div>

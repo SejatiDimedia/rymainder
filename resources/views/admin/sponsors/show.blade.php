@@ -6,26 +6,26 @@
                     <h1 class="text-xl font-bold text-slate-900 tracking-tight">
                         {{ $sponsor->name }}
                     </h1>
-                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {{ $sponsor->status->badgeClasses() }}">
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap {{ $sponsor->status->badgeClasses() }}">
                         {{ $sponsor->status->label() }}
                     </span>
                 </div>
                 <p class="text-xs text-slate-500 mt-0.5">
-                    Detail profil donatur, status aktivasi Telegram Bot, dan audit pengiriman reminder.
+                    Donor profile details, Telegram bot onboarding status, and reminder delivery audits
                 </p>
             </div>
             <div class="flex items-center gap-2">
                 <a 
                     href="{{ route('admin.sponsors.index') }}" 
-                    class="px-3.5 py-2 border border-slate-200 bg-white rounded-xl text-xs font-medium text-slate-700 hover:bg-slate-50 transition shadow-xs"
+                    class="px-3.5 py-2 border border-slate-200 bg-white rounded-xl text-xs font-medium text-slate-700 hover:bg-slate-50 transition shadow-xs whitespace-nowrap"
                 >
-                    ← Daftar Sponsor
+                    ← Sponsors List
                 </a>
                 <a 
                     href="{{ route('admin.sponsors.edit', $sponsor) }}" 
-                    class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold shadow-xs transition active:scale-[0.98]"
+                    class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold shadow-xs transition active:scale-[0.98] whitespace-nowrap"
                 >
-                    Edit Profil
+                    Edit Profile
                 </a>
             </div>
         </div>
@@ -42,56 +42,56 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-            <!-- 1. Detail Profil & Jadwal (2 Cols) -->
+            <!-- 1. Profile Details & Donation Cycle (2 Cols) -->
             <div class="lg:col-span-2 space-y-6">
                 <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs">
                     <h2 class="text-sm font-bold text-slate-900 mb-4 pb-3 border-b border-slate-100">
-                        Informasi Donasi & Kontak
+                        Donation & Contact Information
                     </h2>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6 text-xs">
                         <div>
-                            <span class="text-slate-400 block text-[11px] mb-1">Email Sponsor</span>
+                            <span class="text-slate-400 block text-[11px] mb-1">Email Address</span>
                             <span class="font-semibold text-slate-800">{{ $sponsor->email }}</span>
                         </div>
 
                         <div>
-                            <span class="text-slate-400 block text-[11px] mb-1">WhatsApp / No HP</span>
+                            <span class="text-slate-400 block text-[11px] mb-1">WhatsApp / Phone Number</span>
                             <span class="font-semibold text-slate-800">{{ $sponsor->phone }}</span>
                         </div>
 
                         <div>
-                            <span class="text-slate-400 block text-[11px] mb-1">Nama Anak Asuh</span>
-                            <span class="font-semibold text-slate-800">{{ $sponsor->orphan_name ?? 'Program Umum' }}</span>
+                            <span class="text-slate-400 block text-[11px] mb-1">Beneficiary Name</span>
+                            <span class="font-semibold text-slate-800">{{ $sponsor->orphan_name ?? 'General Fund' }}</span>
                         </div>
 
                         <div>
-                            <span class="text-slate-400 block text-[11px] mb-1">Nominal Komitmen</span>
+                            <span class="text-slate-400 block text-[11px] mb-1">Donation Commitment</span>
                             <span class="font-bold text-slate-900 text-sm">{{ $sponsor->formatted_amount }}</span>
                         </div>
 
                         <div>
-                            <span class="text-slate-400 block text-[11px] mb-1">Frekuensi Donasi</span>
+                            <span class="text-slate-400 block text-[11px] mb-1">Payment Frequency</span>
                             <span class="font-semibold text-slate-800">{{ $sponsor->frequency->label() }}</span>
                         </div>
 
                         <div>
-                            <span class="text-slate-400 block text-[11px] mb-1">Tanggal Donasi Terakhir</span>
+                            <span class="text-slate-400 block text-[11px] mb-1">Last Donation Date</span>
                             <span class="font-semibold text-slate-800">{{ $sponsor->last_donation_date->translatedFormat('d F Y') }}</span>
                         </div>
                     </div>
 
                     <!-- Channel Preferences -->
                     <div class="mt-6 pt-4 border-t border-slate-100">
-                        <span class="text-slate-400 block text-[11px] mb-2 font-medium">Preferensi Channel Notifikasi</span>
+                        <span class="text-slate-400 block text-[11px] mb-2 font-medium">Notification Channel Preferences</span>
                         <div class="flex flex-wrap gap-2">
                             @foreach(['email' => 'Email', 'whatsapp' => 'WhatsApp', 'telegram' => 'Telegram'] as $key => $label)
                                 @php
                                     $isEnabled = $sponsor->isChannelEnabled(\App\Domain\Reminder\Enums\ReminderChannel::from($key));
                                 @endphp
-                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-medium {{ $isEnabled ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/80' : 'bg-slate-100 text-slate-400 border border-slate-200/60' }}">
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-medium whitespace-nowrap {{ $isEnabled ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/80' : 'bg-slate-100 text-slate-400 border border-slate-200/60' }}">
                                     <span class="w-1.5 h-1.5 rounded-full {{ $isEnabled ? 'bg-emerald-500' : 'bg-slate-400' }}"></span>
-                                    {{ $label }}: {{ $isEnabled ? 'Aktif' : 'Non-aktif' }}
+                                    {{ $label }}: {{ $isEnabled ? 'Enabled' : 'Disabled' }}
                                 </span>
                             @endforeach
                         </div>
@@ -99,20 +99,20 @@
 
                     @if($sponsor->notes)
                         <div class="mt-4 pt-4 border-t border-slate-100">
-                            <span class="text-slate-400 block text-[11px] mb-1 font-medium">Catatan Khusus</span>
+                            <span class="text-slate-400 block text-[11px] mb-1 font-medium">Staff Notes</span>
                             <p class="text-xs text-slate-700 bg-slate-50 p-3.5 rounded-xl border border-slate-200/60 leading-relaxed">{{ $sponsor->notes }}</p>
                         </div>
                     @endif
                 </div>
             </div>
 
-            <!-- 2. Status Jatuh Tempo & Telegram Onboarding (1 Col) -->
+            <!-- 2. Due Date Status & Telegram Onboarding (1 Col) -->
             <div class="space-y-6">
 
-                <!-- Due Date Box matching modern card -->
+                <!-- Due Date Box -->
                 <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs">
                     <span class="text-[11px] font-semibold uppercase tracking-wider text-slate-400 block mb-1">
-                        Status Jatuh Tempo
+                        Due Date Status
                     </span>
                     <div class="text-2xl font-bold text-slate-900 tracking-tight">
                         {{ $nextDue->translatedFormat('d F Y') }}
@@ -122,22 +122,22 @@
                         @if($daysDiff < 0)
                             <div class="p-3.5 bg-rose-50 border border-rose-200/80 rounded-xl text-rose-800 text-xs font-medium flex items-center gap-2">
                                 <span class="w-2 h-2 rounded-full bg-rose-500 shrink-0"></span>
-                                <span>Terlambat <strong>{{ abs($daysDiff) }} hari</strong> dari tanggal tempo.</span>
+                                <span>Overdue by <strong>{{ abs($daysDiff) }} days</strong> from schedule.</span>
                             </div>
                         @elseif($daysDiff === 0)
                             <div class="p-3.5 bg-amber-50 border border-amber-200/80 rounded-xl text-amber-800 text-xs font-medium flex items-center gap-2">
                                 <span class="w-2 h-2 rounded-full bg-amber-500 shrink-0"></span>
-                                <span>Jatuh tempo <strong>HARI INI</strong>.</span>
+                                <span>Due <strong>TODAY</strong>.</span>
                             </div>
                         @elseif($daysDiff <= 7)
                             <div class="p-3.5 bg-amber-50 border border-amber-200/80 rounded-xl text-amber-800 text-xs font-medium flex items-center gap-2">
                                 <span class="w-2 h-2 rounded-full bg-amber-500 shrink-0"></span>
-                                <span>Jatuh tempo dalam <strong>{{ $daysDiff }} hari ke depan</strong>.</span>
+                                <span>Due in <strong>{{ $daysDiff }} days</strong>.</span>
                             </div>
                         @else
                             <div class="p-3.5 bg-emerald-50 border border-emerald-200/80 rounded-xl text-emerald-800 text-xs font-medium flex items-center gap-2">
                                 <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
-                                <span>Jadwal donasi masih <strong>{{ $daysDiff }} hari lagi</strong>.</span>
+                                <span>Due in <strong>{{ $daysDiff }} days</strong>.</span>
                             </div>
                         @endif
                     </div>
@@ -146,27 +146,27 @@
                 <!-- Telegram Onboarding Card -->
                 <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs">
                     <div class="flex items-center justify-between mb-3">
-                        <h3 class="font-bold text-slate-900 text-sm">Aktivasi Bot Telegram</h3>
+                        <h3 class="font-bold text-slate-900 text-sm">Telegram Bot Activation</h3>
                         @if($sponsor->hasConnectedTelegram())
-                            <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap">
                                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                                Terhubung
+                                Connected
                             </span>
                         @else
-                            <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+                            <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200 whitespace-nowrap">
                                 <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-                                Belum Terhubung
+                                Pending
                             </span>
                         @endif
                     </div>
 
                     @if($sponsor->hasConnectedTelegram())
                         <p class="text-xs text-slate-600 leading-relaxed">
-                            Akun Telegram telah aktif dengan Chat ID: <code class="bg-slate-100 px-1.5 py-0.5 rounded text-slate-800 font-mono text-[11px]">{{ $sponsor->telegram_chat_id }}</code>.
+                            Telegram account connected with Chat ID: <code class="bg-slate-100 px-1.5 py-0.5 rounded text-slate-800 font-mono text-[11px]">{{ $sponsor->telegram_chat_id }}</code>.
                         </p>
                     @else
                         <p class="text-xs text-slate-600 mb-3 leading-relaxed">
-                            Bagikan tautan berikut ke sponsor untuk menghubungkan Telegram Bot:
+                            Share this onboarding link with the sponsor to link their Telegram app:
                         </p>
 
                         <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/80 text-[11px] break-all font-mono select-all text-blue-600">
@@ -174,7 +174,7 @@
                         </div>
 
                         <p class="text-[11px] text-slate-400 mt-2">
-                            Kode Verifikasi: <strong>{{ $sponsor->telegram_onboard_code }}</strong>
+                            Unique Code: <strong>{{ $sponsor->telegram_onboard_code }}</strong>
                         </p>
                     @endif
                 </div>
@@ -183,11 +183,11 @@
 
         </div>
 
-        <!-- 3. Riwayat Reminder (Audit Trail) -->
+        <!-- 3. Reminder Delivery History -->
         <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-6 space-y-4">
             <div>
-                <h2 class="font-bold text-slate-900 text-base">Riwayat Pengiriman Reminder</h2>
-                <p class="text-xs text-slate-500 mt-0.5">Audit pengiriman notifikasi yang telah diproses untuk sponsor ini</p>
+                <h2 class="font-bold text-slate-900 text-base">Reminder Delivery History</h2>
+                <p class="text-xs text-slate-500 mt-0.5">Audit log of all notification dispatches processed for this donor</p>
             </div>
 
             <div class="border border-slate-200/70 rounded-xl overflow-hidden">
@@ -195,34 +195,34 @@
                     <table class="w-full text-left text-xs">
                         <thead class="bg-slate-50/70 border-b border-slate-200/70 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
                             <tr>
-                                <th class="px-5 py-3">Gelombang / Wave</th>
+                                <th class="px-5 py-3">Schedule / Wave</th>
                                 <th class="px-5 py-3">Channel</th>
-                                <th class="px-5 py-3">Target Jatuh Tempo</th>
+                                <th class="px-5 py-3">Target Due Date</th>
                                 <th class="px-5 py-3">Status</th>
-                                <th class="px-5 py-3">Waktu Eksekusi</th>
-                                <th class="px-5 py-3">Keterangan / Log</th>
+                                <th class="px-5 py-3">Sent Timestamp</th>
+                                <th class="px-5 py-3">Log / Details</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
                             @forelse($logs as $log)
                                 <tr class="hover:bg-slate-50/70 transition">
-                                    <td class="px-5 py-3 font-semibold text-slate-800">
+                                    <td class="px-5 py-3 font-semibold text-slate-800 whitespace-nowrap">
                                         {{ $log->reminderSetting->label ?? 'Custom Wave' }}
                                     </td>
-                                    <td class="px-5 py-3">
-                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] {{ $log->channel->badgeClasses() }}">
+                                    <td class="px-5 py-3 whitespace-nowrap">
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] whitespace-nowrap {{ $log->channel->badgeClasses() }}">
                                             {{ $log->channel->label() }}
                                         </span>
                                     </td>
-                                    <td class="px-5 py-3 text-slate-600">
+                                    <td class="px-5 py-3 text-slate-600 whitespace-nowrap">
                                         {{ $log->due_date->translatedFormat('d M Y') }}
                                     </td>
-                                    <td class="px-5 py-3">
-                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] {{ $log->status->badgeClasses() }}">
+                                    <td class="px-5 py-3 whitespace-nowrap">
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] whitespace-nowrap {{ $log->status->badgeClasses() }}">
                                             {{ $log->status->label() }}
                                         </span>
                                     </td>
-                                    <td class="px-5 py-3 text-slate-500">
+                                    <td class="px-5 py-3 text-slate-500 whitespace-nowrap">
                                         {{ $log->sent_at ? $log->sent_at->translatedFormat('d M Y, H:i') : '—' }}
                                     </td>
                                     <td class="px-5 py-3 text-slate-500">
@@ -232,7 +232,7 @@
                             @empty
                                 <tr>
                                     <td colspan="6" class="px-5 py-8 text-center text-slate-400 text-xs">
-                                        Belum ada riwayat reminder yang tercatat untuk sponsor ini.
+                                        No reminder delivery records found for this sponsor.
                                     </td>
                                 </tr>
                             @endforelse

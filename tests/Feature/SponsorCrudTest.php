@@ -37,7 +37,7 @@ it('allows authenticated user to view dashboard and sponsor list', function () {
 
     $response2 = $this->get(route('admin.sponsors.index'));
     $response2->assertOk()
-        ->assertSee('Data Sponsor & Donatur', false);
+        ->assertSee('Sponsors & Donors', false);
 
 });
 

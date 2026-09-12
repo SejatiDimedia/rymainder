@@ -2,11 +2,11 @@
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <div>
-                <h1 class="text-xl font-bold text-slate-900 tracking-tight">Tambah Data Sponsor Baru</h1>
-                <p class="text-xs text-slate-500 mt-0.5">Input komitmen donasi dan konfigurasi channel pengiriman reminder</p>
+                <h1 class="text-xl font-bold text-slate-900 tracking-tight">Add New Sponsor</h1>
+                <p class="text-xs text-slate-500 mt-0.5">Input donation commitment details and configure notification channels</p>
             </div>
             <a href="{{ route('admin.sponsors.index') }}" class="text-xs font-medium text-slate-600 hover:text-slate-900 transition">
-                ← Kembali ke Daftar
+                ← Back to Sponsors
             </a>
         </div>
     </x-slot>
@@ -16,7 +16,7 @@
 
             @if ($errors->any())
                 <div class="mb-6 p-4 bg-rose-50 border border-rose-200 text-rose-800 rounded-xl text-xs">
-                    <div class="font-semibold mb-1">Terdapat kesalahan pengisian formulir:</div>
+                    <div class="font-semibold mb-1">Please correct the following errors:</div>
                     <ul class="list-disc list-inside space-y-0.5">
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
@@ -28,53 +28,53 @@
             <form method="POST" action="{{ route('admin.sponsors.store') }}" class="space-y-6">
                 @csrf
 
-                <!-- Section: Identitas Sponsor -->
+                <!-- Section: Sponsor Identity -->
                 <div class="border-b border-slate-100 pb-5">
-                    <h2 class="text-sm font-bold text-slate-900 mb-4">1. Identitas & Kontak Sponsor</h2>
+                    <h2 class="text-sm font-bold text-slate-900 mb-4">1. Sponsor Identity & Contact Details</h2>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <!-- Name -->
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1.5">Nama Lengkap Sponsor <span class="text-rose-500">*</span></label>
-                            <input type="text" name="name" value="{{ old('name') }}" required placeholder="Contoh: Budi Santoso" class="w-full text-xs rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 focus:border-slate-400 focus:ring-slate-400">
+                            <label class="block text-xs font-semibold text-slate-700 mb-1.5">Full Name <span class="text-rose-500">*</span></label>
+                            <input type="text" name="name" value="{{ old('name') }}" required placeholder="e.g. John Doe" class="w-full text-xs rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 focus:border-slate-400 focus:ring-slate-400">
                         </div>
 
                         <!-- Email -->
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1.5">Alamat Email <span class="text-rose-500">*</span></label>
-                            <input type="email" name="email" value="{{ old('email') }}" required placeholder="budi@example.com" class="w-full text-xs rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 focus:border-slate-400 focus:ring-slate-400">
+                            <label class="block text-xs font-semibold text-slate-700 mb-1.5">Email Address <span class="text-rose-500">*</span></label>
+                            <input type="email" name="email" value="{{ old('email') }}" required placeholder="john@example.com" class="w-full text-xs rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 focus:border-slate-400 focus:ring-slate-400">
                         </div>
 
                         <!-- Phone (WhatsApp) -->
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1.5">Nomor WhatsApp / HP <span class="text-rose-500">*</span></label>
-                            <input type="text" name="phone" value="{{ old('phone') }}" required placeholder="081234567890 atau +6281234567890" class="w-full text-xs rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 focus:border-slate-400 focus:ring-slate-400">
-                            <p class="text-[11px] text-slate-400 mt-1">Sistem otomatis menstandarkan nomor ke format E.164 (+62).</p>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1.5">WhatsApp / Mobile Number <span class="text-rose-500">*</span></label>
+                            <input type="text" name="phone" value="{{ old('phone') }}" required placeholder="081234567890 or +6281234567890" class="w-full text-xs rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 focus:border-slate-400 focus:ring-slate-400">
+                            <p class="text-[11px] text-slate-400 mt-1">Automatically normalized to standard E.164 (+62).</p>
                         </div>
 
                         <!-- Orphan Name -->
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1.5">Nama Anak Asuh (Opsional)</label>
-                            <input type="text" name="orphan_name" value="{{ old('orphan_name') }}" placeholder="Contoh: Rizky Pratama (kosongkan jika donasi umum)" class="w-full text-xs rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 focus:border-slate-400 focus:ring-slate-400">
+                            <label class="block text-xs font-semibold text-slate-700 mb-1.5">Beneficiary / Child Name (Optional)</label>
+                            <input type="text" name="orphan_name" value="{{ old('orphan_name') }}" placeholder="Leave blank if general program" class="w-full text-xs rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 focus:border-slate-400 focus:ring-slate-400">
                         </div>
                     </div>
                 </div>
 
-                <!-- Section: Parameter Donasi & Siklus -->
+                <!-- Section: Commitment Parameters -->
                 <div class="border-b border-slate-100 pb-5">
-                    <h2 class="text-sm font-bold text-slate-900 mb-4">2. Komitmen Donasi & Perhitungan Jatuh Tempo</h2>
+                    <h2 class="text-sm font-bold text-slate-900 mb-4">2. Commitment & Due Date Calculation</h2>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                         <!-- Last Donation Date -->
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1.5">Tanggal Donasi Terakhir <span class="text-rose-500">*</span></label>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1.5">Last Donation Date <span class="text-rose-500">*</span></label>
                             <input type="date" name="last_donation_date" value="{{ old('last_donation_date', now()->toDateString()) }}" max="{{ now()->toDateString() }}" required class="w-full text-xs rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 focus:border-slate-400 focus:ring-slate-400">
-                            <p class="text-[11px] text-slate-400 mt-1">Dasar perhitungan jatuh tempo siklus berikutnya.</p>
+                            <p class="text-[11px] text-slate-400 mt-1">Base date for next rolling due calculation.</p>
                         </div>
 
                         <!-- Frequency -->
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1.5">Frekuensi Pembayaran <span class="text-rose-500">*</span></label>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1.5">Payment Frequency <span class="text-rose-500">*</span></label>
                             <select name="frequency" required class="w-full text-xs rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 focus:border-slate-400 focus:ring-slate-400">
                                 @foreach($frequencies as $freq)
                                     <option value="{{ $freq->value }}" {{ old('frequency') === $freq->value ? 'selected' : '' }}>
@@ -86,7 +86,7 @@
 
                         <!-- Amount -->
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1.5">Nominal Donasi (Rp) <span class="text-rose-500">*</span></label>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1.5">Donation Amount (Rp) <span class="text-rose-500">*</span></label>
                             <input type="number" name="amount" value="{{ old('amount', '500000') }}" min="0" step="10000" required class="w-full text-xs rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 focus:border-slate-400 focus:ring-slate-400">
                         </div>
                     </div>
@@ -94,7 +94,7 @@
                     <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-5">
                         <!-- Status -->
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1.5">Status Keaktifan Sponsor <span class="text-rose-500">*</span></label>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1.5">Sponsor Status <span class="text-rose-500">*</span></label>
                             <select name="status" required class="w-full text-xs rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 focus:border-slate-400 focus:ring-slate-400">
                                 @foreach($statuses as $status)
                                     <option value="{{ $status->value }}" {{ old('status', 'active') === $status->value ? 'selected' : '' }}>
@@ -106,7 +106,7 @@
 
                         <!-- Channel Preferences -->
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1.5">Channel Notifikasi yang Diizinkan</label>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1.5">Allowed Notification Channels</label>
                             <div class="mt-2 flex flex-wrap gap-4">
                                 @foreach($availableChannels as $channel)
                                     <label class="inline-flex items-center text-xs text-slate-700 cursor-pointer">
@@ -121,19 +121,19 @@
                     </div>
                 </div>
 
-                <!-- Section: Catatan -->
+                <!-- Section: Notes -->
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1.5">Catatan Tambahan (Opsional)</label>
-                    <textarea name="notes" rows="3" placeholder="Informasi khusus, permintaan donatur, atau preferensi follow-up..." class="w-full text-xs rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 focus:border-slate-400 focus:ring-slate-400">{{ old('notes') }}</textarea>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1.5">Additional Notes (Optional)</label>
+                    <textarea name="notes" rows="3" placeholder="Special requests, donor notes, follow-up preferences..." class="w-full text-xs rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 focus:border-slate-400 focus:ring-slate-400">{{ old('notes') }}</textarea>
                 </div>
 
                 <!-- Submit Buttons -->
                 <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
                     <a href="{{ route('admin.sponsors.index') }}" class="px-4 py-2 border border-slate-200 text-slate-700 rounded-xl text-xs font-medium hover:bg-slate-50 transition shadow-xs">
-                        Batal
+                        Cancel
                     </a>
                     <button type="submit" class="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-xl text-xs shadow-xs transition active:scale-[0.98]">
-                        Simpan Data Sponsor
+                        Save Sponsor Record
                     </button>
                 </div>
             </form>
