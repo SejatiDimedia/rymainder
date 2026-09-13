@@ -17,6 +17,48 @@
             </div>
         @endif
 
+        @if(session('info'))
+            <div class="p-4 bg-blue-50 border border-blue-200 text-blue-800 rounded-2xl text-xs flex items-center gap-2.5 shadow-xs">
+                <svg class="w-4 h-4 text-blue-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span class="font-medium">{{ session('info') }}</span>
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="p-4 bg-rose-50 border border-rose-200 text-rose-800 rounded-2xl text-xs flex items-center gap-2.5 shadow-xs">
+                <svg class="w-4 h-4 text-rose-600 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>
+                <span class="font-medium">{{ session('error') }}</span>
+            </div>
+        @endif
+
+        @if(isset($failedCount) && $failedCount > 0)
+            <div class="p-4 bg-rose-50 border border-rose-200/80 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-rose-100 border border-rose-200 text-rose-600 flex items-center justify-center shrink-0">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-bold text-rose-900">
+                            Attention: {{ $failedCount }} Failed {{ Str::plural('Reminder', $failedCount) }} Detected
+                        </h4>
+                        <p class="text-[11px] text-rose-700 mt-0.5">
+                            Notifications failed to deliver due to provider timeout or connection issue. You can resend them safely into the queue.
+                        </p>
+                    </div>
+                </div>
+                <form method="POST" action="{{ route('admin.logs.retry-all') }}" onsubmit="return confirm('Are you sure you want to resend all {{ $failedCount }} failed reminders? They will be queued for safe background dispatch.');" class="shrink-0 w-full sm:w-auto">
+                    @csrf
+                    @if(request('channel'))
+                        <input type="hidden" name="channel" value="{{ request('channel') }}">
+                    @endif
+                    <button type="submit" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-3.5 py-2 bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white rounded-xl text-xs font-semibold shadow-xs transition">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                        Retry All Failed Reminders ({{ $failedCount }})
+                    </button>
+                </form>
+            </div>
+        @endif
+
         <!-- Filter & Search Bar -->
         <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
             <form method="GET" action="{{ route('admin.logs.index') }}" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
@@ -144,7 +186,7 @@
                                         </div>
                                     </td>
                                     <td class="px-5 py-3.5 text-slate-700 font-medium whitespace-nowrap">
-                                        {{ $log->reminderSetting->label ?? 'Custom Wave' }}
+                                        {{ $log->reminderSetting->label ?? ($log->customReminder->title ?? ($log->is_manual ? 'Manual Direct' : 'Custom Direct')) }}
                                     </td>
                                     <td class="px-5 py-3.5 whitespace-nowrap">
                                         <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] whitespace-nowrap {{ $log->channel->badgeClasses() }}">
@@ -166,7 +208,8 @@
                                         @if($log->status->value === 'failed')
                                             <form method="POST" action="{{ route('admin.logs.retry', $log) }}" class="inline">
                                                 @csrf
-                                                <button type="submit" class="px-2.5 py-1 text-xs font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 rounded-lg border border-rose-200 transition">
+                                                <button type="submit" class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 active:bg-rose-200 rounded-lg border border-rose-200 transition">
+                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                                                     Retry Send
                                                 </button>
                                             </form>

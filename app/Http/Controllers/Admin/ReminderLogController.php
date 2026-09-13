@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Domain\Reminder\Actions\RetryReminderLogAction;
 use App\Domain\Reminder\Enums\DeliveryStatus;
 use App\Domain\Reminder\Enums\ReminderChannel;
 use App\Domain\Reminder\Models\ReminderLog;
 use App\Http\Controllers\Controller;
-use App\Jobs\SendSponsorReminderJob;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -15,7 +15,7 @@ class ReminderLogController extends Controller
 {
     public function index(Request $request): View
     {
-        $query = ReminderLog::with(['sponsor', 'reminderSetting']);
+        $query = ReminderLog::with(['sponsor', 'reminderSetting', 'customReminder']);
 
         // Search sponsor name / email
         if ($search = $request->input('search')) {
@@ -42,37 +42,53 @@ class ReminderLogController extends Controller
         }
 
         $logs = $query->latest('id')->paginate(20)->withQueryString();
+        $failedCount = ReminderLog::where('status', DeliveryStatus::FAILED)->count();
 
         return view('admin.logs.index', [
             'logs' => $logs,
             'filters' => $request->only(['search', 'status', 'channel', 'date']),
             'statuses' => DeliveryStatus::cases(),
             'channels' => ReminderChannel::cases(),
+            'failedCount' => $failedCount,
         ]);
     }
 
-    public function retry(ReminderLog $log): RedirectResponse
+    public function retry(ReminderLog $log, RetryReminderLogAction $retryAction): RedirectResponse
     {
-        $sponsor = $log->sponsor;
-        $setting = $log->reminderSetting;
-
-        if (! $sponsor || ! $setting) {
-            return back()->with('error', 'Data sponsor atau pengaturan reminder tidak ditemukan.');
+        if (! $log->sponsor) {
+            return back()->with('error', 'Sponsor data associated with this reminder was not found.');
         }
 
-        // Reset log status to pending
-        $log->update([
-            'status' => DeliveryStatus::PENDING,
-            'error_message' => null,
-        ]);
+        $success = $retryAction->execute($log);
 
-        SendSponsorReminderJob::dispatch(
-            sponsorId: $sponsor->id,
-            reminderSettingId: $setting->id,
-            channel: $log->channel,
-            dueDateString: $log->due_date->format('Y-m-d')
-        );
+        if (! $success) {
+            return back()->with('error', 'Failed to queue retry. The reminder configuration or template is invalid.');
+        }
 
-        return back()->with('success', "Percobaan pengiriman ulang via {$log->channel->label()} telah dimasukkan ke antrean worker.");
+        return back()->with('success', "Retry attempt via {$log->channel->label()} has been queued.");
+    }
+
+    public function retryAll(Request $request, RetryReminderLogAction $retryAction): RedirectResponse
+    {
+        $query = ReminderLog::where('status', DeliveryStatus::FAILED)->with(['sponsor', 'reminderSetting', 'customReminder']);
+
+        if ($channel = $request->input('channel')) {
+            $query->where('channel', $channel);
+        }
+
+        $failedLogs = $query->get();
+
+        if ($failedLogs->isEmpty()) {
+            return back()->with('info', 'No failed reminders found to retry.');
+        }
+
+        $queuedCount = 0;
+        foreach ($failedLogs as $log) {
+            if ($retryAction->execute($log)) {
+                $queuedCount++;
+            }
+        }
+
+        return back()->with('success', "{$queuedCount} failed reminder(s) have been queued for resending.");
     }
 }

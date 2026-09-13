@@ -364,13 +364,14 @@
                                 <th class="px-5 py-3">Status</th>
                                 <th class="px-5 py-3">Sent Timestamp</th>
                                 <th class="px-5 py-3">Details / Message</th>
+                                <th class="px-5 py-3 text-right">Action</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
                             @forelse($logs as $log)
                                 <tr class="hover:bg-slate-50/70 transition">
                                     <td class="px-5 py-3 font-semibold text-slate-800 whitespace-nowrap">
-                                        {{ $log->reminderSetting->label ?? 'Custom Direct Reminder' }}
+                                        {{ $log->reminderSetting->label ?? ($log->customReminder->title ?? ($log->is_manual ? 'Manual Direct' : 'Custom Direct Reminder')) }}
                                     </td>
                                     <td class="px-5 py-3 whitespace-nowrap">
                                         @if($log->is_manual)
@@ -412,10 +413,23 @@
                                             —
                                         @endif
                                     </td>
+                                    <td class="px-5 py-3 text-right whitespace-nowrap">
+                                        @if($log->status->value === 'failed')
+                                            <form method="POST" action="{{ route('admin.logs.retry', $log) }}" class="inline">
+                                                @csrf
+                                                <button type="submit" class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 active:bg-rose-200 rounded-lg border border-rose-200 transition">
+                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                                                    Retry
+                                                </button>
+                                            </form>
+                                        @else
+                                            <span class="text-slate-300 text-xs">—</span>
+                                        @endif
+                                    </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="px-5 py-8 text-center text-slate-400 text-xs">
+                                    <td colspan="8" class="px-5 py-8 text-center text-slate-400 text-xs">
                                         No reminder delivery records found for this sponsor.
                                     </td>
                                 </tr>

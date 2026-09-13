@@ -17,6 +17,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Dashboard Overview
     Route::get('/dashboard', \App\Http\Controllers\Admin\DashboardController::class)->name('dashboard');
 
+    // Sponsor Bulk Import
+    Route::get('/sponsors/import/template', [\App\Http\Controllers\Admin\SponsorImportController::class, 'downloadTemplate'])->name('admin.sponsors.import-template');
+    Route::post('/sponsors/import', [\App\Http\Controllers\Admin\SponsorImportController::class, 'import'])->name('admin.sponsors.import');
+
     // Sponsor Management
     Route::resource('sponsors', \App\Http\Controllers\Admin\SponsorController::class)->names([
         'index' => 'admin.sponsors.index',
@@ -40,10 +44,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/settings/platform/logo', [\App\Http\Controllers\Admin\PlatformSettingController::class, 'resetLogo'])->name('admin.settings.platform.reset-logo');
         Route::delete('/settings/platform/favicon', [\App\Http\Controllers\Admin\PlatformSettingController::class, 'resetFavicon'])->name('admin.settings.platform.reset-favicon');
 
-        // Telegram Bot Message Templates
+        // Telegram Bot Message Templates & Integration
         Route::get('/settings/telegram', [\App\Http\Controllers\Admin\TelegramSettingController::class, 'index'])->name('admin.settings.telegram');
         Route::put('/settings/telegram', [\App\Http\Controllers\Admin\TelegramSettingController::class, 'update'])->name('admin.settings.telegram.update');
         Route::post('/settings/telegram/reset', [\App\Http\Controllers\Admin\TelegramSettingController::class, 'resetDefaults'])->name('admin.settings.telegram.reset');
+        Route::post('/settings/telegram/test-ping', [\App\Http\Controllers\Admin\TelegramSettingController::class, 'testPing'])->name('admin.settings.telegram.test-ping');
 
         // Reminder Waves & Dispatch Engine
         Route::get('/settings/reminders', [\App\Http\Controllers\Admin\ReminderSettingController::class, 'index'])->name('admin.settings.index');
@@ -67,6 +72,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Global Reminder Audit Logs
     Route::get('/logs', [\App\Http\Controllers\Admin\ReminderLogController::class, 'index'])->name('admin.logs.index');
+    Route::post('/logs/retry-all', [\App\Http\Controllers\Admin\ReminderLogController::class, 'retryAll'])->name('admin.logs.retry-all');
     Route::post('/logs/{log}/retry', [\App\Http\Controllers\Admin\ReminderLogController::class, 'retry'])->name('admin.logs.retry');
 
     // User Profile
