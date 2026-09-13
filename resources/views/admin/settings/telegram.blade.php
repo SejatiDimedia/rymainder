@@ -136,7 +136,9 @@
             <div class="lg:col-span-5 bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl shadow-xs p-6 text-white flex flex-col justify-between space-y-4">
                 <div>
                     <div class="flex items-center gap-2 mb-1.5">
-                        <span class="p-1.5 bg-sky-500/20 text-sky-400 rounded-lg text-xs font-bold">⚡</span>
+                        <span class="p-1.5 bg-sky-500/20 text-sky-400 rounded-lg flex items-center justify-center">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        </span>
                         <h3 class="font-bold text-sm text-white">Quick Bot Connectivity Test</h3>
                     </div>
                     <p class="text-xs text-slate-300 leading-relaxed">
@@ -185,8 +187,8 @@
                     <div>
                         <div class="flex items-center justify-between mb-2">
                             <div class="flex items-center gap-2">
-                                <div class="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-xs">
-                                    ✓
+                                <div class="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shadow-xs">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
                                 </div>
                                 <h3 class="font-bold text-slate-900 text-sm">Activation Success Message</h3>
                             </div>
@@ -224,8 +226,8 @@
                     <div>
                         <div class="flex items-center justify-between mb-2">
                             <div class="flex items-center gap-2">
-                                <div class="w-7 h-7 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center font-bold text-xs">
-                                    👋
+                                <div class="w-7 h-7 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center shadow-xs">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
                                 </div>
                                 <h3 class="font-bold text-slate-900 text-sm">Welcome Message (/start)</h3>
                             </div>
@@ -265,8 +267,8 @@
                     <div>
                         <div class="flex items-center justify-between mb-2">
                             <div class="flex items-center gap-2">
-                                <div class="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-xs">
-                                    💬
+                                <div class="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center shadow-xs">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
                                 </div>
                                 <h3 class="font-bold text-slate-900 text-sm">Default Auto-Reply (General Messages)</h3>
                             </div>
@@ -301,8 +303,8 @@
                     <div>
                         <div class="flex items-center justify-between mb-2">
                             <div class="flex items-center gap-2">
-                                <div class="w-7 h-7 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center font-bold text-xs">
-                                    ✕
+                                <div class="w-7 h-7 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center shadow-xs">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                                 </div>
                                 <h3 class="font-bold text-slate-900 text-sm">Invalid / Expired Activation Code</h3>
                             </div>
