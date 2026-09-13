@@ -89,9 +89,9 @@ class PlatformSetting extends Model
     public static function supportedTimezones(): array
     {
         return [
-            'Asia/Jakarta' => 'WIB — Waktu Indonesia Barat (UTC+7, Sumatra/Jawa/Kalbar)',
-            'Asia/Makassar' => 'WITA — Waktu Indonesia Tengah (UTC+8, Bali/Sulawesi/NTB/NTT/Kalsel/Kaltim)',
-            'Asia/Jayapura' => 'WIT — Waktu Indonesia Timur (UTC+9, Maluku/Papua)',
+            'Asia/Jakarta' => 'WIB — Western Indonesia Time (UTC+7, Sumatra/Java/West Kalimantan)',
+            'Asia/Makassar' => 'WITA — Central Indonesia Time (UTC+8, Bali/Sulawesi/East Kalimantan/NTB/NTT)',
+            'Asia/Jayapura' => 'WIT — Eastern Indonesia Time (UTC+9, Maluku/Papua)',
             'UTC' => 'UTC — Coordinated Universal Time',
         ];
     }

@@ -26,13 +26,13 @@
             </div>
         @endif
 
-        <!-- Sub-Navigation Tabs: Platform Branding | Bot Telegram | Reminder Waves -->
+        <!-- Sub-Navigation Tabs: Platform & Branding | Telegram Bot | Reminder Waves -->
         <div class="flex items-center gap-1 p-1 bg-slate-200/50 rounded-xl w-fit text-xs">
             <span class="px-4 py-1.5 rounded-lg bg-white font-semibold text-slate-900 shadow-xs cursor-default">
                 Platform & Branding
             </span>
             <a href="{{ route('admin.settings.telegram') }}" class="px-4 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 font-medium transition">
-                Template Bot Telegram
+                Telegram Bot
             </a>
             <a href="{{ route('admin.settings.index') }}" class="px-4 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 font-medium transition">
                 Reminder Waves
@@ -119,7 +119,7 @@
                     <!-- Platform Timezone -->
                     <div class="md:col-span-2 pt-4 border-t border-slate-100">
                         <label for="platform_timezone" class="block text-xs font-semibold text-slate-700 mb-1.5">
-                            System Timezone (Zona Waktu Pengingat) <span class="text-rose-500">*</span>
+                            System Timezone (Reminder Scheduling Timezone) <span class="text-rose-500">*</span>
                         </label>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-start">
                             <div x-data="{
@@ -153,7 +153,7 @@
                                 </select>
                                 <div class="mt-2 flex items-center justify-between gap-2 flex-wrap text-[11px]">
                                     <p class="text-slate-400">
-                                        Perangkat terdeteksi: <strong class="text-slate-700 font-mono" x-text="browserTz"></strong>
+                                        Detected device timezone: <strong class="text-slate-700 font-mono" x-text="browserTz"></strong>
                                     </p>
                                     <button 
                                         type="button" 
@@ -161,11 +161,11 @@
                                         class="inline-flex items-center gap-1 text-[11px] font-semibold text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-2 py-0.5 rounded-lg border border-indigo-200 transition cursor-pointer"
                                     >
                                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                        Pilih Sesuai Waktu Perangkat Saya
+                                        Match My Device Timezone
                                     </button>
                                 </div>
                                 <p class="text-[11px] text-slate-400 mt-1.5 leading-relaxed">
-                                    Semua jadwal pengingat (Harian, Mingguan, Jam) dan log riwayat pengiriman akan dievaluasi sesuai zona waktu yang dipilih.
+                                    All reminder schedules (Daily, Weekly, Hourly) and delivery audit trail timestamps are evaluated according to this configured timezone.
                                 </p>
                             </div>
                             <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200/80 flex items-center justify-between gap-3 text-xs">
