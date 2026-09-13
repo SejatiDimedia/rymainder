@@ -31,6 +31,7 @@
             x-data="{
                 targetType: '{{ old('target_type', $reminder->target_type) }}',
                 scheduleType: '{{ old('schedule_type', $reminder->schedule_type) }}',
+                scheduleTime: '{{ old('schedule_time', $reminder->schedule_times[0] ?? '12:00') }}',
                 multiTimes: {{ json_encode(old('schedule_times', $reminder->schedule_times ?: ['08:00', '13:00', '18:00'])) }},
                 newTimeInput: '',
                 sponsorSearch: '',
@@ -227,7 +228,7 @@
                 <!-- Mode 1: Daily Single Time -->
                 <div x-show="scheduleType === 'daily'" class="p-4 bg-slate-50/80 rounded-xl border border-slate-200/70 space-y-1">
                     <label class="block font-semibold text-slate-700 text-xs mb-1">Execution Time (WIB)</label>
-                    <input type="time" name="schedule_time" value="{{ old('schedule_time', $reminder->schedule_times[0] ?? '12:00') }}" class="text-xs rounded-xl border-slate-200 bg-white text-slate-900 focus:border-slate-400 focus:ring-slate-400">
+                    <input type="time" name="schedule_time" x-model="scheduleTime" :disabled="scheduleType !== 'daily'" class="text-xs rounded-xl border-slate-200 bg-white text-slate-900 focus:border-slate-400 focus:ring-slate-400">
                     <p class="text-[10px] text-slate-400">Dispatches once every day at this exact time.</p>
                 </div>
 
@@ -248,7 +249,7 @@
                             <template x-for="(time, idx) in multiTimes" :key="idx">
                                 <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-white border border-slate-200 text-slate-800 rounded-lg text-xs font-mono shadow-xs">
                                     <span x-text="time + ' WIB'"></span>
-                                    <input type="hidden" name="schedule_times[]" :value="time">
+                                    <input type="hidden" name="schedule_times[]" :value="time" :disabled="scheduleType !== 'multiple_daily'">
                                     <button type="button" @click="removeMultiTime(idx)" class="text-rose-500 hover:text-rose-700 font-bold ml-1">&times;</button>
                                 </div>
                             </template>
@@ -259,7 +260,7 @@
                 <!-- Mode 3: Hourly Interval -->
                 <div x-show="scheduleType === 'interval_hours'" class="p-4 bg-slate-50/80 rounded-xl border border-slate-200/70 space-y-1">
                     <label class="block font-semibold text-slate-700 text-xs mb-1">Repeat Every</label>
-                    <select name="interval_hours" class="text-xs rounded-xl border-slate-200 bg-white text-slate-900 focus:border-slate-400 focus:ring-slate-400">
+                    <select name="interval_hours" :disabled="scheduleType !== 'interval_hours'" class="text-xs rounded-xl border-slate-200 bg-white text-slate-900 focus:border-slate-400 focus:ring-slate-400">
                         @foreach([1, 2, 3, 4, 6, 8, 12, 24] as $hrs)
                             <option value="{{ $hrs }}" {{ old('interval_hours', $reminder->interval_hours) == $hrs ? 'selected' : '' }}>
                                 Every {{ $hrs }} Hours (Setiap {{ $hrs }} jam)
@@ -273,7 +274,7 @@
                 <div x-show="scheduleType === 'weekly'" class="p-4 bg-slate-50/80 rounded-xl border border-slate-200/70 grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                         <label class="block font-semibold text-slate-700 text-xs mb-1">Day of Week</label>
-                        <select name="schedule_day" class="w-full text-xs rounded-xl border-slate-200 bg-white text-slate-900 focus:border-slate-400 focus:ring-slate-400">
+                        <select name="schedule_day" :disabled="scheduleType !== 'weekly'" class="w-full text-xs rounded-xl border-slate-200 bg-white text-slate-900 focus:border-slate-400 focus:ring-slate-400">
                             @foreach($daysOfWeek as $num => $dayName)
                                 <option value="{{ $num }}" {{ old('schedule_day', $reminder->schedule_day) == $num ? 'selected' : '' }}>{{ $dayName }}</option>
                             @endforeach
@@ -281,14 +282,14 @@
                     </div>
                     <div>
                         <label class="block font-semibold text-slate-700 text-xs mb-1">Time (WIB)</label>
-                        <input type="time" name="schedule_time" value="{{ old('schedule_time', $reminder->schedule_times[0] ?? '10:00') }}" class="w-full text-xs rounded-xl border-slate-200 bg-white text-slate-900 focus:border-slate-400 focus:ring-slate-400">
+                        <input type="time" name="schedule_time" x-model="scheduleTime" :disabled="scheduleType !== 'weekly'" class="w-full text-xs rounded-xl border-slate-200 bg-white text-slate-900 focus:border-slate-400 focus:ring-slate-400">
                     </div>
                 </div>
 
                 <!-- Mode 5: Once -->
                 <div x-show="scheduleType === 'once'" class="p-4 bg-slate-50/80 rounded-xl border border-slate-200/70 space-y-1">
                     <label class="block font-semibold text-slate-700 text-xs mb-1">Dispatch Date & Time (WIB)</label>
-                    <input type="datetime-local" name="scheduled_at" value="{{ old('scheduled_at', $reminder->scheduled_at ? $reminder->scheduled_at->format('Y-m-d\TH:i') : '') }}" class="text-xs rounded-xl border-slate-200 bg-white text-slate-900 focus:border-slate-400 focus:ring-slate-400">
+                    <input type="datetime-local" name="scheduled_at" value="{{ old('scheduled_at', $reminder->scheduled_at ? $reminder->scheduled_at->format('Y-m-d\TH:i') : '') }}" :disabled="scheduleType !== 'once'" class="text-xs rounded-xl border-slate-200 bg-white text-slate-900 focus:border-slate-400 focus:ring-slate-400">
                     <p class="text-[10px] text-slate-400">Triggers exactly once at this timestamp, then automatically marks as completed.</p>
                 </div>
 

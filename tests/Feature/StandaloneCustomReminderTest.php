@@ -152,6 +152,31 @@ class StandaloneCustomReminderTest extends TestCase
         $this->assertTrue($reminder->sponsors->contains($sponsor2));
     }
 
+    public function test_super_admin_can_create_daily_custom_reminder_with_custom_execution_time(): void
+    {
+        $response = $this->actingAs($this->superAdmin)
+            ->post(route('admin.custom-reminders.store'), [
+                'title' => 'Daily Afternoon Reminder',
+                'message' => 'Daily check-in message',
+                'channels' => ['email'],
+                'target_type' => 'all_active',
+                'schedule_type' => 'daily',
+                'schedule_time' => '15:45',
+                'is_active' => '1',
+            ]);
+
+        $response->assertRedirect(route('admin.custom-reminders.index'));
+        $response->assertSessionHas('success');
+
+        $reminder = CustomReminder::where('title', 'Daily Afternoon Reminder')->first();
+        $this->assertNotNull($reminder);
+        $this->assertEquals(['15:45'], $reminder->schedule_times);
+        $this->assertEquals('daily', $reminder->schedule_type);
+        $this->assertNull($reminder->interval_hours);
+        $this->assertNull($reminder->schedule_day);
+        $this->assertNull($reminder->scheduled_at);
+    }
+
     public function test_super_admin_can_update_custom_reminder_and_modify_selected_sponsors(): void
     {
         $sponsor1 = Sponsor::create([

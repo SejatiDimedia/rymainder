@@ -51,9 +51,9 @@ class CustomReminderController extends Controller
             'target_type' => $request->target_type,
             'schedule_type' => $request->schedule_type,
             'schedule_times' => $times,
-            'interval_hours' => $request->interval_hours,
-            'schedule_day' => $request->schedule_day,
-            'scheduled_at' => $request->scheduled_at,
+            'interval_hours' => $request->schedule_type === 'interval_hours' ? $request->interval_hours : null,
+            'schedule_day' => $request->schedule_type === 'weekly' ? $request->schedule_day : null,
+            'scheduled_at' => $request->schedule_type === 'once' ? $request->scheduled_at : null,
             'is_active' => $request->boolean('is_active', true),
         ]);
 
@@ -99,9 +99,9 @@ class CustomReminderController extends Controller
             'target_type' => $request->target_type,
             'schedule_type' => $request->schedule_type,
             'schedule_times' => $times,
-            'interval_hours' => $request->interval_hours,
-            'schedule_day' => $request->schedule_day,
-            'scheduled_at' => $request->scheduled_at,
+            'interval_hours' => $request->schedule_type === 'interval_hours' ? $request->interval_hours : null,
+            'schedule_day' => $request->schedule_type === 'weekly' ? $request->schedule_day : null,
+            'scheduled_at' => $request->schedule_type === 'once' ? $request->scheduled_at : null,
             'is_active' => $request->boolean('is_active', true),
         ];
 
