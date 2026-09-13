@@ -212,7 +212,12 @@
 
             <!-- Section 3: Schedule Configurator -->
             <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-6 space-y-4">
-                <h2 class="text-sm font-bold text-slate-900 border-b border-slate-100 pb-2">3. Schedule Configuration</h2>
+                <div class="flex items-center justify-between border-b border-slate-100 pb-2 gap-2 flex-wrap">
+                    <h2 class="text-sm font-bold text-slate-900">3. Schedule Configuration</h2>
+                    <span class="text-[11px] font-mono font-medium text-slate-600 bg-slate-100/80 px-2.5 py-0.5 rounded-md border border-slate-200/80">
+                        Active Time: <strong class="text-slate-900">{{ now()->format('H:i') }} {{ $platformTimezoneLabel }}</strong>
+                    </span>
+                </div>
 
                 <div>
                     <label class="block font-semibold text-slate-700 mb-1.5 text-xs">Schedule Frequency Type <span class="text-rose-500">*</span></label>
@@ -227,16 +232,16 @@
 
                 <!-- Mode 1: Daily Single Time -->
                 <div x-show="scheduleType === 'daily'" class="p-4 bg-slate-50/80 rounded-xl border border-slate-200/70 space-y-1">
-                    <label class="block font-semibold text-slate-700 text-xs mb-1">Execution Time (WIB)</label>
+                    <label class="block font-semibold text-slate-700 text-xs mb-1">Execution Time ({{ $platformTimezoneLabel }})</label>
                     <input type="time" name="schedule_time" x-model="scheduleTime" :disabled="scheduleType !== 'daily'" class="text-xs rounded-xl border-slate-200 bg-white text-slate-900 focus:border-slate-400 focus:ring-slate-400">
-                    <p class="text-[10px] text-slate-400">Dispatches once every day at this exact time.</p>
+                    <p class="text-[10px] text-slate-400">Dispatches once every day at this exact time ({{ $platformTimezoneLabel }}).</p>
                 </div>
 
                 <!-- Mode 2: Multiple Times a Day -->
                 <div x-show="scheduleType === 'multiple_daily'" class="p-4 bg-slate-50/80 rounded-xl border border-slate-200/70 space-y-3">
                     <div>
-                        <label class="block font-semibold text-slate-700 text-xs mb-1">Multiple Daily Times (WIB)</label>
-                        <p class="text-[10px] text-slate-400 mb-2">Specify all times during the day when this reminder should trigger (e.g. 08:00, 13:00, 18:00).</p>
+                        <label class="block font-semibold text-slate-700 text-xs mb-1">Multiple Daily Times ({{ $platformTimezoneLabel }})</label>
+                        <p class="text-[10px] text-slate-400 mb-2">Specify all times during the day when this reminder should trigger.</p>
                         
                         <div class="flex items-center gap-2 mb-3">
                             <input type="time" x-model="newTimeInput" class="text-xs rounded-xl border-slate-200 bg-white text-slate-900 focus:border-slate-400 focus:ring-slate-400">
@@ -248,7 +253,7 @@
                         <div class="flex flex-wrap gap-2 items-center">
                             <template x-for="(time, idx) in multiTimes" :key="idx">
                                 <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-white border border-slate-200 text-slate-800 rounded-lg text-xs font-mono shadow-xs">
-                                    <span x-text="time + ' WIB'"></span>
+                                    <span x-text="time + ' ' + '{{ $platformTimezoneLabel }}'"></span>
                                     <input type="hidden" name="schedule_times[]" :value="time" :disabled="scheduleType !== 'multiple_daily'">
                                     <button type="button" @click="removeMultiTime(idx)" class="text-rose-500 hover:text-rose-700 font-bold ml-1">&times;</button>
                                 </div>
@@ -283,14 +288,14 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block font-semibold text-slate-700 text-xs mb-1">Time (WIB)</label>
+                        <label class="block font-semibold text-slate-700 text-xs mb-1">Time ({{ $platformTimezoneLabel }})</label>
                         <input type="time" name="schedule_time" x-model="scheduleTime" :disabled="scheduleType !== 'weekly'" class="w-full text-xs rounded-xl border-slate-200 bg-white text-slate-900 focus:border-slate-400 focus:ring-slate-400">
                     </div>
                 </div>
 
                 <!-- Mode 5: Once -->
                 <div x-show="scheduleType === 'once'" class="p-4 bg-slate-50/80 rounded-xl border border-slate-200/70 space-y-1">
-                    <label class="block font-semibold text-slate-700 text-xs mb-1">Dispatch Date & Time (WIB)</label>
+                    <label class="block font-semibold text-slate-700 text-xs mb-1">Dispatch Date & Time ({{ $platformTimezoneLabel }})</label>
                     <input type="datetime-local" name="scheduled_at" :disabled="scheduleType !== 'once'" class="text-xs rounded-xl border-slate-200 bg-white text-slate-900 focus:border-slate-400 focus:ring-slate-400">
                     <p class="text-[10px] text-slate-400">Triggers exactly once at this timestamp, then automatically marks as completed.</p>
                 </div>

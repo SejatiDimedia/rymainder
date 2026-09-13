@@ -112,6 +112,43 @@
                             <p class="mt-1.5 text-xs text-rose-600 font-medium">{{ $message }}</p>
                         @enderror
                     </div>
+
+                    <!-- Platform Timezone -->
+                    <div class="md:col-span-2 pt-4 border-t border-slate-100">
+                        <label for="platform_timezone" class="block text-xs font-semibold text-slate-700 mb-1.5">
+                            System Timezone (Zona Waktu Pengingat) <span class="text-rose-500">*</span>
+                        </label>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-start">
+                            <div>
+                                <select 
+                                    id="platform_timezone" 
+                                    name="platform_timezone" 
+                                    class="w-full text-xs rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 focus:border-slate-400 focus:ring-slate-400 py-2.5 px-3.5 transition"
+                                >
+                                    @foreach($supportedTimezones as $val => $label)
+                                        <option value="{{ $val }}" {{ old('platform_timezone', $platformTimezone) === $val ? 'selected' : '' }}>
+                                            {{ $label }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <p class="text-[11px] text-slate-400 mt-1.5 leading-relaxed">
+                                    Semua jadwal pengingat (Harian, Mingguan, Jam) dan log riwayat pengiriman akan dievaluasi sesuai zona waktu yang dipilih.
+                                </p>
+                            </div>
+                            <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200/80 flex items-center justify-between gap-3 text-xs">
+                                <div>
+                                    <span class="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">Current Active System Time</span>
+                                    <span class="text-sm font-bold text-slate-900 font-mono mt-0.5 block">{{ $currentTime }}</span>
+                                </div>
+                                <span class="px-2.5 py-1 rounded-lg text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
+                                    {{ $currentTimezoneLabel }}
+                                </span>
+                            </div>
+                        </div>
+                        @error('platform_timezone')
+                            <p class="mt-1.5 text-xs text-rose-600 font-medium">{{ $message }}</p>
+                        @enderror
+                    </div>
                 </div>
             </div>
 

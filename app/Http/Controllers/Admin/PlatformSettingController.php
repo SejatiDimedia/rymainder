@@ -22,6 +22,10 @@ class PlatformSettingController extends Controller
             'platformLogo' => PlatformSetting::getLogoUrl(),
             'hasCustomLogo' => PlatformSetting::hasCustomLogo(),
             'platformFavicon' => PlatformSetting::getFaviconUrl(),
+            'platformTimezone' => PlatformSetting::getTimezone(),
+            'supportedTimezones' => PlatformSetting::supportedTimezones(),
+            'currentTime' => \Carbon\Carbon::now(PlatformSetting::getTimezone())->format('H:i:s'),
+            'currentTimezoneLabel' => PlatformSetting::getTimezoneLabel(),
         ]);
     }
 
@@ -33,12 +37,17 @@ class PlatformSettingController extends Controller
         $validated = $request->validate([
             'platform_name' => ['required', 'string', 'max:100'],
             'platform_tagline' => ['nullable', 'string', 'max:150'],
+            'platform_timezone' => ['nullable', 'string', 'in:Asia/Jakarta,Asia/Makassar,Asia/Jayapura,UTC'],
             'logo' => ['nullable', 'image', 'mimes:png,jpg,jpeg,svg,webp', 'max:2048'],
             'favicon' => ['nullable', 'file', 'mimes:png,ico,svg', 'max:1024'],
         ]);
 
         PlatformSetting::set('platform_name', trim($validated['platform_name']));
-        PlatformSetting::set('platform_tagline', $validated['platform_tagline'] ? trim($validated['platform_tagline']) : null);
+        PlatformSetting::set('platform_tagline', !empty($validated['platform_tagline']) ? trim($validated['platform_tagline']) : null);
+
+        if ($request->filled('platform_timezone')) {
+            PlatformSetting::set('platform_timezone', $validated['platform_timezone']);
+        }
 
         // Handle Logo Upload
         if ($request->hasFile('logo')) {

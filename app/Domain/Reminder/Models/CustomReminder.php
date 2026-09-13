@@ -5,6 +5,7 @@ namespace App\Domain\Reminder\Models;
 use App\Domain\Reminder\Enums\ReminderChannel;
 use App\Domain\Sponsor\Enums\SponsorStatus;
 use App\Domain\Sponsor\Models\Sponsor;
+use App\Models\PlatformSetting;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -82,12 +83,14 @@ class CustomReminder extends Model
 
     public function scheduleLabel(): string
     {
+        $tz = PlatformSetting::getTimezoneLabel();
+
         return match ($this->schedule_type) {
-            'daily' => 'Daily at ' . ($this->schedule_times[0] ?? '12:00') . ' WIB',
-            'multiple_daily' => count($this->schedule_times ?? []) . 'x Daily (' . implode(', ', $this->schedule_times ?? []) . ' WIB)',
+            'daily' => 'Daily at ' . ($this->schedule_times[0] ?? '12:00') . ' ' . $tz,
+            'multiple_daily' => count($this->schedule_times ?? []) . 'x Daily (' . implode(', ', $this->schedule_times ?? []) . ' ' . $tz . ')',
             'interval_hours' => "Every {$this->interval_hours} Hours",
-            'weekly' => 'Weekly on ' . (static::daysOfWeek()[$this->schedule_day] ?? 'Monday') . ' at ' . ($this->schedule_times[0] ?? '12:00') . ' WIB',
-            'once' => 'Once at ' . ($this->scheduled_at ? $this->scheduled_at->format('d M Y H:i') . ' WIB' : '-'),
+            'weekly' => 'Weekly on ' . (static::daysOfWeek()[$this->schedule_day] ?? 'Monday') . ' at ' . ($this->schedule_times[0] ?? '12:00') . ' ' . $tz,
+            'once' => 'Once at ' . ($this->scheduled_at ? $this->scheduled_at->timezone(PlatformSetting::getTimezone())->format('d M Y H:i') . ' ' . $tz : '-'),
             default => ucfirst($this->schedule_type ?? 'Daily'),
         };
     }
@@ -124,7 +127,7 @@ class CustomReminder extends Model
      */
     public function computeNextRunAt(?Carbon $now = null): ?Carbon
     {
-        $now = $now ? $now->copy() : Carbon::now(config('app.timezone', 'Asia/Jakarta'));
+        $now = $now ? $now->copy() : Carbon::now(PlatformSetting::getTimezone());
 
         return match ($this->schedule_type) {
             'daily' => $this->computeNextDailyRun($now),

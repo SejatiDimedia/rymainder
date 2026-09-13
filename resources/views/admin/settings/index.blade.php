@@ -80,7 +80,7 @@
                             required 
                             class="text-xs font-bold rounded-lg border-slate-300 bg-white text-slate-900 focus:border-slate-400 focus:ring-slate-400 py-1 px-2"
                         >
-                        <span class="text-xs font-semibold text-slate-400">WIB</span>
+                        <span class="text-xs font-semibold text-slate-500 font-mono">{{ $platformTimezoneLabel }}</span>
                     </div>
 
                     <button 
@@ -102,7 +102,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-indigo-900/80 mt-2">
                 <ul class="list-disc list-inside space-y-1">
                     <li><strong>Due Date Offsets:</strong> Positive values (e.g. 7 for H-7), 0 (Due Date), or Negative values (e.g. -7 for Overdue follow-up).</li>
-                    <li><strong>Daily Automated Scan:</strong> At {{ $dispatchTime }} WIB each day, the scheduler matches all donors whose due date equals today ± wave offset.</li>
+                    <li><strong>Daily Automated Scan:</strong> At {{ $dispatchTime }} {{ $platformTimezoneLabel }} each day, the scheduler matches all donors whose due date equals today ± wave offset.</li>
                     <li><strong>Zero Duplicate Guarantee:</strong> Donors are only ever notified once per wave per donation cycle via the unique audit log.</li>
                 </ul>
                 <div class="space-y-1">

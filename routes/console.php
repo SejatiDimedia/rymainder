@@ -19,10 +19,11 @@ Artisan::command('inspire', function () {
 |
 */
 $dispatchTime = PlatformSetting::get('reminder_dispatch_time', env('REMINDER_DISPATCH_TIME', '07:00'));
+$timezone = PlatformSetting::getTimezone();
 
 Schedule::command('reminders:send')
     ->dailyAt($dispatchTime)
-    ->timezone(config('app.timezone', 'Asia/Jakarta'))
+    ->timezone($timezone)
     ->withoutOverlapping()
     ->runInBackground();
 
@@ -37,6 +38,6 @@ Schedule::command('reminders:send')
 */
 Schedule::command('custom-reminders:run')
     ->everyMinute()
-    ->timezone(config('app.timezone', 'Asia/Jakarta'))
+    ->timezone($timezone)
     ->withoutOverlapping()
     ->runInBackground();

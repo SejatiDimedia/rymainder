@@ -76,3 +76,18 @@ it('allows super admin to upload a custom logo and reset to default', function (
     expect(PlatformSetting::hasCustomLogo())->toBeFalse();
     Storage::disk('public')->assertMissing($logoPath);
 });
+
+it('allows super admin to update platform timezone to WITA or WIT', function () {
+    $this->actingAs($this->superAdmin);
+
+    $response = $this->put(route('admin.settings.platform.update'), [
+        'platform_name' => 'Rymainder WITA',
+        'platform_timezone' => 'Asia/Makassar',
+    ]);
+
+    $response->assertSessionHasNoErrors()
+        ->assertRedirect();
+
+    expect(PlatformSetting::getTimezone())->toBe('Asia/Makassar');
+    expect(PlatformSetting::getTimezoneLabel())->toBe('WITA');
+});

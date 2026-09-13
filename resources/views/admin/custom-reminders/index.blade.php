@@ -5,10 +5,15 @@
                 <h1 class="text-xl font-bold text-slate-900 tracking-tight">Custom Reminders</h1>
                 <p class="text-xs text-slate-500 mt-0.5">Create custom scheduled reminders, broadcast announcements, and targeted donor notifications</p>
             </div>
-            <div>
+            <div class="flex items-center gap-3 flex-wrap">
+                <div class="inline-flex items-center gap-2 px-3.5 py-2 bg-white border border-slate-200/90 rounded-xl text-xs shadow-xs">
+                    <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                    <span class="text-slate-500 font-medium">System Time:</span>
+                    <span class="font-bold text-slate-900 font-mono">{{ now()->format('H:i') }} {{ $platformTimezoneLabel }}</span>
+                </div>
                 <a 
                     href="{{ route('admin.custom-reminders.create') }}"
-                    class="inline-flex items-center gap-2 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold shadow-xs transition active:scale-[0.98] whitespace-nowrap"
+                    class="inline-flex items-center gap-2 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold shadow-xs transition active:scale-[0.98] whitespace-nowrap cursor-pointer"
                 >
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                     <span>Create Custom Reminder</span>

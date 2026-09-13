@@ -38,8 +38,10 @@ class ReminderSettingController extends Controller
 
         PlatformSetting::set('reminder_dispatch_time', $validated['reminder_dispatch_time']);
 
+        $tzLabel = PlatformSetting::getTimezoneLabel();
+
         return redirect()->route('admin.settings.index')
-            ->with('success', "Daily automated dispatch time updated to {$validated['reminder_dispatch_time']} WIB.");
+            ->with('success', "Daily automated dispatch time updated to {$validated['reminder_dispatch_time']} {$tzLabel}.");
     }
 
     public function store(StoreReminderSettingRequest $request): RedirectResponse
