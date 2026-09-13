@@ -187,3 +187,82 @@ it('can disconnect telegram account from sponsor', function () {
         ->and($sponsor->telegram_chat_id)->toBeNull();
 });
 
+it('allows super admin to view and update telegram message templates', function () {
+    $superAdmin = \App\Models\User::factory()->create([
+        'role' => \App\Domain\Admin\Enums\UserRole::SUPER_ADMIN,
+    ]);
+
+    $response = $this->actingAs($superAdmin)->get(route('admin.settings.telegram'));
+    $response->assertOk()
+        ->assertSee('Telegram Bot Message Templates');
+
+    $updateResponse = $this->actingAs($superAdmin)->put(route('admin.settings.telegram.update'), [
+        'telegram_msg_activation_success' => 'Halo {sponsor_name}, selamat datang di {platform_name}!',
+        'telegram_msg_welcome' => 'Selamat datang di bot pengingat {platform_name}.',
+        'telegram_msg_default_reply' => 'Pesan diterima oleh customer service {platform_name}.',
+        'telegram_msg_invalid_code' => 'Kode aktivasi Anda tidak valid.',
+    ]);
+
+    $updateResponse->assertRedirect(route('admin.settings.telegram'))
+        ->assertSessionHas('success');
+
+    expect(\App\Models\PlatformSetting::getTelegramActivationSuccessMessage())
+        ->toBe('Halo {sponsor_name}, selamat datang di {platform_name}!')
+        ->and(\App\Models\PlatformSetting::getTelegramWelcomeMessage())
+        ->toBe('Selamat datang di bot pengingat {platform_name}.');
+});
+
+it('uses custom template and replaces dynamic variables on activation', function () {
+    config([
+        'rymainder.channels.telegram.bot_token' => 'fake_token',
+        'rymainder.channels.telegram.endpoint' => 'https://api.telegram.org',
+    ]);
+
+    \App\Models\PlatformSetting::set('platform_name', 'Yayasan Berkah Mulia');
+    \App\Models\PlatformSetting::set('telegram_msg_activation_success', 'Selamat {sponsor_name}! Akun terhubung ke {platform_name}.');
+
+    $sponsor = Sponsor::create([
+        'name' => 'Fulan bin Fulan',
+        'email' => 'fulan@example.com',
+        'phone' => '+6281234567899',
+        'telegram_onboard_code' => 'FULAN123',
+        'last_donation_date' => '2025-01-01',
+        'frequency' => PaymentFrequency::ANNUAL,
+        'amount' => 500000,
+        'status' => SponsorStatus::ACTIVE,
+    ]);
+
+    \Illuminate\Support\Facades\Http::fake([
+        'https://api.telegram.org/botfake_token/sendMessage' => function (\Illuminate\Http\Client\Request $request) {
+            expect($request['text'])->toBe('Selamat Fulan bin Fulan! Akun terhubung ke Yayasan Berkah Mulia.');
+            return \Illuminate\Support\Facades\Http::response(['ok' => true]);
+        },
+    ]);
+
+    $action = app(\App\Domain\Telegram\Actions\ProcessTelegramWebhookAction::class);
+    $result = $action->execute([
+        'message' => [
+            'chat' => ['id' => 123456],
+            'text' => '/start FULAN123',
+        ],
+    ]);
+
+    expect($result['status'])->toBe('success');
+});
+
+it('can reset telegram message templates to defaults', function () {
+    $superAdmin = \App\Models\User::factory()->create([
+        'role' => \App\Domain\Admin\Enums\UserRole::SUPER_ADMIN,
+    ]);
+
+    \App\Models\PlatformSetting::set('telegram_msg_activation_success', 'Teks Kustom Sementara');
+
+    $response = $this->actingAs($superAdmin)->post(route('admin.settings.telegram.reset'));
+    $response->assertRedirect(route('admin.settings.telegram'))
+        ->assertSessionHas('success');
+
+    expect(\App\Models\PlatformSetting::getTelegramActivationSuccessMessage())
+        ->toContain("Assalamu'alaikum Wr. Wb.");
+});
+
+

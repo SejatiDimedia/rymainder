@@ -40,6 +40,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/settings/platform/logo', [\App\Http\Controllers\Admin\PlatformSettingController::class, 'resetLogo'])->name('admin.settings.platform.reset-logo');
         Route::delete('/settings/platform/favicon', [\App\Http\Controllers\Admin\PlatformSettingController::class, 'resetFavicon'])->name('admin.settings.platform.reset-favicon');
 
+        // Telegram Bot Message Templates
+        Route::get('/settings/telegram', [\App\Http\Controllers\Admin\TelegramSettingController::class, 'index'])->name('admin.settings.telegram');
+        Route::put('/settings/telegram', [\App\Http\Controllers\Admin\TelegramSettingController::class, 'update'])->name('admin.settings.telegram.update');
+        Route::post('/settings/telegram/reset', [\App\Http\Controllers\Admin\TelegramSettingController::class, 'resetDefaults'])->name('admin.settings.telegram.reset');
+
         // Reminder Waves & Dispatch Engine
         Route::get('/settings/reminders', [\App\Http\Controllers\Admin\ReminderSettingController::class, 'index'])->name('admin.settings.index');
         Route::put('/settings/reminders/schedule-time', [\App\Http\Controllers\Admin\ReminderSettingController::class, 'updateScheduleTime'])->name('admin.settings.schedule-time');

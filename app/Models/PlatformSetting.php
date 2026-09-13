@@ -138,4 +138,37 @@ class PlatformSetting extends Model
 
         return asset('favicon.png');
     }
+
+    /**
+     * Default Telegram Bot message templates.
+     */
+    public static function defaultTelegramMessages(): array
+    {
+        return [
+            'telegram_msg_activation_success' => "Assalamu'alaikum Wr. Wb. / Salam Sejahtera,\n\nAlhamdulillah, terima kasih Bpk/Ibu *{sponsor_name}*!\n\nAkun Telegram Anda telah berhasil terhubung dengan sistem pengingat donasi *{platform_name}*. Mulai saat ini, jadwal pengingat komitmen donasi rutin Anda akan otomatis dikirimkan ke chat ini.\n\nSemoga Allah SWT membalas segala amal kebaikan Bpk/Ibu dengan keberkahan yang berlipat ganda. Aamiin.",
+            'telegram_msg_welcome' => "Selamat datang di Bot Resmi {platform_name}.\n\nUntuk menghubungkan akun sponsor/donatur Anda, silakan klik tautan aktivasi khusus yang telah dibagikan oleh staf yayasan, atau hubungi admin kami.",
+            'telegram_msg_default_reply' => "Terima kasih telah menghubungi kami. Pesan Anda telah kami terima. Untuk informasi lebih lanjut mengenai donasi, silakan hubungi staf yayasan di nomor WhatsApp resmi.",
+            'telegram_msg_invalid_code' => "Kode aktivasi tidak dikenali atau sudah kedaluwarsa. Mohon hubungi admin yayasan untuk mendapatkan link aktivasi yang baru.",
+        ];
+    }
+
+    public static function getTelegramActivationSuccessMessage(): string
+    {
+        return (string) (static::get('telegram_msg_activation_success') ?: static::defaultTelegramMessages()['telegram_msg_activation_success']);
+    }
+
+    public static function getTelegramWelcomeMessage(): string
+    {
+        return (string) (static::get('telegram_msg_welcome') ?: static::defaultTelegramMessages()['telegram_msg_welcome']);
+    }
+
+    public static function getTelegramDefaultReplyMessage(): string
+    {
+        return (string) (static::get('telegram_msg_default_reply') ?: static::defaultTelegramMessages()['telegram_msg_default_reply']);
+    }
+
+    public static function getTelegramInvalidCodeMessage(): string
+    {
+        return (string) (static::get('telegram_msg_invalid_code') ?: static::defaultTelegramMessages()['telegram_msg_invalid_code']);
+    }
 }

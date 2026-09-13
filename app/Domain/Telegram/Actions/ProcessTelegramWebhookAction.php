@@ -3,6 +3,7 @@
 namespace App\Domain\Telegram\Actions;
 
 use App\Domain\Sponsor\Models\Sponsor;
+use App\Models\PlatformSetting;
 use Exception;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -23,6 +24,8 @@ class ProcessTelegramWebhookAction
             return ['status' => 'ignored', 'reason' => 'No chat id found'];
         }
 
+        $platformName = PlatformSetting::getName();
+
         // Check if message is a /start command with code: e.g. "/start ABC123XYZ"
         if (preg_match('/^\/start\s+([A-Za-z0-9_\-]+)/i', $text, $matches)) {
             $onboardCode = trim($matches[1]);
@@ -34,11 +37,12 @@ class ProcessTelegramWebhookAction
                     'telegram_chat_id' => (string) $chatId,
                 ]);
 
-                $replyText = "Assalamu'alaikum Wr. Wb. / Salam Sejahtera,\n\n"
-                    . "Alhamdulillah, terima kasih Bpk/Ibu *{$sponsor->name}*!\n\n"
-                    . "Akun Telegram Anda telah berhasil terhubung dengan sistem pengingat donasi *Yayasan Peduli Anak Yatim*. "
-                    . "Mulai saat ini, jadwal pengingat komitmen donasi rutin Anda akan otomatis dikirimkan ke chat ini.\n\n"
-                    . "Semoga Allah SWT membalas segala amal kebaikan Bpk/Ibu dengan keberkahan yang berlipat ganda. Aamiin.";
+                $template = PlatformSetting::getTelegramActivationSuccessMessage();
+                $replyText = str_replace(
+                    ['{sponsor_name}', '{platform_name}'],
+                    [$sponsor->name, $platformName],
+                    $template
+                );
 
                 $this->sendTelegramReply($chatId, $replyText);
 
@@ -50,7 +54,8 @@ class ProcessTelegramWebhookAction
                     'chat_id' => $chatId,
                 ];
             } else {
-                $replyText = "Kode aktivasi tidak dikenali atau sudah kedaluwarsa. Mohon hubungi admin yayasan untuk mendapatkan link aktivasi yang baru.";
+                $template = PlatformSetting::getTelegramInvalidCodeMessage();
+                $replyText = str_replace(['{platform_name}'], [$platformName], $template);
                 $this->sendTelegramReply($chatId, $replyText);
 
                 return ['status' => 'invalid_code', 'code' => $onboardCode];
@@ -59,15 +64,16 @@ class ProcessTelegramWebhookAction
 
         // Standard /start without code or normal greeting
         if (str_starts_with($text, '/start')) {
-            $replyText = "Selamat datang di Bot Resmi Yayasan Peduli Anak Yatim.\n\n"
-                . "Untuk menghubungkan akun sponsor/donatur Anda, silakan klik tautan aktivasi khusus yang telah dibagikan oleh staf yayasan, atau hubungi admin kami.";
+            $template = PlatformSetting::getTelegramWelcomeMessage();
+            $replyText = str_replace(['{platform_name}'], [$platformName], $template);
             $this->sendTelegramReply($chatId, $replyText);
 
             return ['status' => 'prompt_code'];
         }
 
         // Default response for other messages
-        $replyText = "Terima kasih telah menghubungi kami. Pesan Anda telah kami terima. Untuk informasi lebih lanjut mengenai donasi, silakan hubungi staf yayasan di nomor WhatsApp resmi.";
+        $template = PlatformSetting::getTelegramDefaultReplyMessage();
+        $replyText = str_replace(['{platform_name}'], [$platformName], $template);
         $this->sendTelegramReply($chatId, $replyText);
 
         return ['status' => 'default_reply'];

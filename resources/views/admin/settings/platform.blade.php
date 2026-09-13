@@ -26,11 +26,14 @@
             </div>
         @endif
 
-        <!-- Sub-Navigation Tabs: Platform Branding | Reminder Waves -->
+        <!-- Sub-Navigation Tabs: Platform Branding | Bot Telegram | Reminder Waves -->
         <div class="flex items-center gap-1 p-1 bg-slate-200/50 rounded-xl w-fit text-xs">
             <span class="px-4 py-1.5 rounded-lg bg-white font-semibold text-slate-900 shadow-xs cursor-default">
                 Platform & Branding
             </span>
+            <a href="{{ route('admin.settings.telegram') }}" class="px-4 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 font-medium transition">
+                Template Bot Telegram
+            </a>
             <a href="{{ route('admin.settings.index') }}" class="px-4 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 font-medium transition">
                 Reminder Waves
             </a>
