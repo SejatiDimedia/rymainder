@@ -92,3 +92,98 @@ it('enforces webhook secret when configured', function () {
 
     $responseWithHeader->assertOk();
 });
+
+it('sends telegram onboarding invitation email to sponsor', function () {
+    \Illuminate\Support\Facades\Mail::fake();
+    config(['rymainder.channels.telegram.bot_username' => 'RymainderBot']);
+
+    $user = \App\Models\User::factory()->create();
+    $sponsor = Sponsor::create([
+        'name' => 'Ahmad Dahlan',
+        'email' => 'ahmad@example.com',
+        'phone' => '+6281234567890',
+        'last_donation_date' => '2025-01-01',
+        'frequency' => PaymentFrequency::ANNUAL,
+        'amount' => 500000,
+        'status' => SponsorStatus::ACTIVE,
+    ]);
+
+    $response = $this->actingAs($user)->post(route('admin.sponsors.send-telegram-invitation', $sponsor));
+
+    $response->assertRedirect()
+        ->assertSessionHas('success');
+
+    \Illuminate\Support\Facades\Mail::assertSent(\App\Mail\TelegramOnboardingInvitationMail::class, function ($mail) use ($sponsor) {
+        return $mail->hasTo('ahmad@example.com') && $mail->sponsor->id === $sponsor->id;
+    });
+});
+
+it('syncs telegram updates and connects sponsor', function () {
+    config([
+        'rymainder.channels.telegram.bot_token' => 'fake_token',
+        'rymainder.channels.telegram.endpoint' => 'https://api.telegram.org',
+    ]);
+
+    $user = \App\Models\User::factory()->create();
+    $sponsor = Sponsor::create([
+        'name' => 'Siti Nurhaliza',
+        'email' => 'siti@example.com',
+        'phone' => '+6281234567891',
+        'telegram_onboard_code' => 'SITI9999',
+        'last_donation_date' => '2025-01-01',
+        'frequency' => PaymentFrequency::ANNUAL,
+        'amount' => 500000,
+        'status' => SponsorStatus::ACTIVE,
+    ]);
+
+    \Illuminate\Support\Facades\Http::fake([
+        'https://api.telegram.org/botfake_token/getUpdates' => \Illuminate\Support\Facades\Http::response([
+            'ok' => true,
+            'result' => [
+                [
+                    'update_id' => 1234,
+                    'message' => [
+                        'message_id' => 55,
+                        'chat' => ['id' => 998877],
+                        'text' => '/start SITI9999',
+                    ],
+                ],
+            ],
+        ]),
+        'https://api.telegram.org/botfake_token/sendMessage' => \Illuminate\Support\Facades\Http::response(['ok' => true]),
+    ]);
+
+    $response = $this->actingAs($user)->post(route('admin.sponsors.check-telegram-status', $sponsor));
+
+    $response->assertRedirect()
+        ->assertSessionHas('success');
+
+    $sponsor->refresh();
+    expect($sponsor->telegram_chat_id)->toBe('998877');
+});
+
+it('can disconnect telegram account from sponsor', function () {
+    $user = \App\Models\User::factory()->create();
+    $sponsor = Sponsor::create([
+        'name' => 'Bambang',
+        'email' => 'bambang@example.com',
+        'phone' => '+6281234567892',
+        'telegram_chat_id' => '123456',
+        'last_donation_date' => '2025-01-01',
+        'frequency' => PaymentFrequency::ANNUAL,
+        'amount' => 500000,
+        'status' => SponsorStatus::ACTIVE,
+    ]);
+
+    expect($sponsor->hasConnectedTelegram())->toBeTrue();
+
+    $response = $this->actingAs($user)->delete(route('admin.sponsors.disconnect-telegram', $sponsor));
+
+    $response->assertRedirect()
+        ->assertSessionHas('success');
+
+    $sponsor->refresh();
+    expect($sponsor->hasConnectedTelegram())->toBeFalse()
+        ->and($sponsor->telegram_chat_id)->toBeNull();
+});
+

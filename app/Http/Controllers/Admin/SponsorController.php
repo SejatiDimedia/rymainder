@@ -7,11 +7,14 @@ use App\Domain\Reminder\Services\DueDateCalculator;
 use App\Domain\Sponsor\Enums\PaymentFrequency;
 use App\Domain\Sponsor\Enums\SponsorStatus;
 use App\Domain\Sponsor\Models\Sponsor;
+use App\Domain\Telegram\Actions\SyncTelegramUpdatesAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSponsorRequest;
 use App\Http\Requests\UpdateSponsorRequest;
+use App\Mail\TelegramOnboardingInvitationMail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -135,5 +138,49 @@ class SponsorController extends Controller
 
         return redirect()->route('admin.sponsors.index')
             ->with('success', "Sponsor {$name} telah dihapus dari sistem.");
+    }
+
+    public function sendTelegramInvitation(Sponsor $sponsor): RedirectResponse
+    {
+        if (empty($sponsor->email)) {
+            return back()->with('error', "Sponsor tidak memiliki alamat email yang valid.");
+        }
+
+        if (empty(config('rymainder.channels.telegram.bot_username'))) {
+            return back()->with('error', "Bot Telegram belum dikonfigurasi di pengaturan sistem.");
+        }
+
+        try {
+            Mail::to($sponsor->email)->send(new TelegramOnboardingInvitationMail($sponsor));
+
+            return back()->with('success', "Undangan aktivasi Telegram berhasil dikirimkan ke {$sponsor->email}.");
+        } catch (\Exception $e) {
+            return back()->with('error', "Gagal mengirim email undangan: " . $e->getMessage());
+        }
+    }
+
+    public function checkTelegramStatus(Sponsor $sponsor, SyncTelegramUpdatesAction $syncAction): RedirectResponse
+    {
+        $syncResult = $syncAction->execute();
+        $sponsor->refresh();
+
+        if ($sponsor->hasConnectedTelegram()) {
+            return back()->with('success', "Alhamdulillah! Akun Telegram {$sponsor->name} telah berhasil terhubung (Chat ID: {$sponsor->telegram_chat_id}).");
+        }
+
+        $notice = $syncResult['status'] === 'success'
+            ? "Belum ada pesan aktivasi masuk dari sponsor {$sponsor->name}. Pastikan sponsor telah membuka bot @".config('rymainder.channels.telegram.bot_username')." dan menekan tombol START."
+            : "Sinkronisasi Telegram gagal: " . ($syncResult['message'] ?? 'Periksa koneksi bot.');
+
+        return back()->with('info', $notice);
+    }
+
+    public function disconnectTelegram(Sponsor $sponsor): RedirectResponse
+    {
+        $sponsor->update([
+            'telegram_chat_id' => null,
+        ]);
+
+        return back()->with('success', "Tautan akun Telegram untuk sponsor {$sponsor->name} telah diputuskan.");
     }
 }

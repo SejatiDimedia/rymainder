@@ -44,6 +44,7 @@ class UpdateSponsorRequest extends FormRequest
             'channel_preferences' => ['nullable', 'array'],
             'channel_preferences.*' => ['string', 'in:email,whatsapp,telegram,sms'],
             'notes' => ['nullable', 'string', 'max:1000'],
+            'telegram_chat_id' => ['nullable', 'string', 'max:50'],
         ];
     }
 }

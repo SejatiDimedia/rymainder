@@ -28,6 +28,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         'destroy' => 'admin.sponsors.destroy',
     ]);
     Route::post('/sponsors/{sponsor}/send-reminder', [\App\Http\Controllers\Admin\ManualReminderController::class, 'send'])->name('admin.sponsors.send-reminder');
+    Route::post('/sponsors/{sponsor}/send-telegram-invitation', [\App\Http\Controllers\Admin\SponsorController::class, 'sendTelegramInvitation'])->name('admin.sponsors.send-telegram-invitation');
+    Route::post('/sponsors/{sponsor}/check-telegram-status', [\App\Http\Controllers\Admin\SponsorController::class, 'checkTelegramStatus'])->name('admin.sponsors.check-telegram-status');
+    Route::delete('/sponsors/{sponsor}/disconnect-telegram', [\App\Http\Controllers\Admin\SponsorController::class, 'disconnectTelegram'])->name('admin.sponsors.disconnect-telegram');
 
     // Platform & Reminder Settings (Restricted to Super Admin)
     Route::middleware('role:super_admin')->group(function () {

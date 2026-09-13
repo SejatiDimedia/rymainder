@@ -57,6 +57,13 @@
                             <label class="block text-xs font-semibold text-slate-700 mb-1.5">Beneficiary / Child Name (Optional)</label>
                             <input type="text" name="orphan_name" value="{{ old('orphan_name') }}" placeholder="Leave blank if general program" class="w-full text-xs rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 focus:border-slate-400 focus:ring-slate-400">
                         </div>
+
+                        <!-- Telegram Chat ID -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1.5">Telegram Chat ID (Optional / Manual Link)</label>
+                            <input type="text" name="telegram_chat_id" value="{{ old('telegram_chat_id') }}" placeholder="e.g. 123456789" class="w-full text-xs rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 focus:border-slate-400 focus:ring-slate-400 font-mono">
+                            <p class="text-[11px] text-slate-400 mt-1">ID akun Telegram donatur. Dapat diisi manual untuk pengujian langsung tanpa webhook.</p>
+                        </div>
                     </div>
                 </div>
 
