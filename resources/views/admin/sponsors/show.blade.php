@@ -234,7 +234,7 @@
                             </div>
                             <div>
                                 <h3 class="font-bold text-slate-900 text-sm">Telegram Bot Activation</h3>
-                                <p class="text-[11px] text-slate-400">Notifikasi pengingat via bot Telegram resmi</p>
+                                <p class="text-[11px] text-slate-400">Automated reminder dispatches via official Telegram Bot</p>
                             </div>
                         </div>
 
@@ -246,7 +246,7 @@
                         @else
                             <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200 whitespace-nowrap">
                                 <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-                                Belum Terhubung
+                                Not Connected
                             </span>
                         @endif
                     </div>
@@ -256,24 +256,24 @@
                             <div>
                                 <div class="font-semibold text-emerald-950 flex items-center gap-1.5">
                                     <svg class="w-3.5 h-3.5 text-emerald-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-                                    <span>Akun Terhubung Aktif</span>
+                                    <span>Account Connected & Active</span>
                                 </div>
                                 <p class="text-[11px] text-emerald-700 mt-1">
                                     Chat ID: <code class="bg-white/80 px-1.5 py-0.5 rounded font-mono font-bold text-emerald-800">{{ $sponsor->telegram_chat_id }}</code>
                                 </p>
                             </div>
 
-                            <form method="POST" action="{{ route('admin.sponsors.disconnect-telegram', $sponsor) }}" onsubmit="return confirm('Apakah Anda yakin ingin memutuskan tautan Telegram sponsor ini?')">
+                            <form method="POST" action="{{ route('admin.sponsors.disconnect-telegram', $sponsor) }}" onsubmit="return confirm('Are you sure you want to disconnect this sponsor\'s Telegram account?')">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="text-[11px] text-rose-600 hover:text-rose-800 hover:underline font-medium transition cursor-pointer">
-                                    Putuskan Tautan
+                                    Disconnect Account
                                 </button>
                             </form>
                         </div>
                     @else
                         <p class="text-xs text-slate-600 leading-relaxed">
-                            Hubungkan akun Telegram donatur agar pengingat dapat terkirim secara otomatis. Kirim undangan langsung ke kontak donatur:
+                            Connect the donor's Telegram account to enable automated reminder dispatches. Share or send an invitation directly:
                         </p>
 
                         <!-- Quick Send Invitation Actions -->
@@ -283,7 +283,7 @@
                                 @csrf
                                 <button type="submit" class="w-full flex items-center justify-center gap-1.5 px-3 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold shadow-xs transition active:scale-[0.98] cursor-pointer">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                                    <span>Kirim Undangan via Email</span>
+                                    <span>Send Invitation via Email</span>
                                 </button>
                             </form>
 
@@ -295,7 +295,7 @@
                             @if(!empty($waPhone))
                                 <a href="https://wa.me/{{ $waPhone }}?text={{ $waText }}" target="_blank" class="flex items-center justify-center gap-1.5 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold shadow-xs transition active:scale-[0.98] cursor-pointer">
                                     <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86.174.086.275.073.376-.044.101-.116.433-.506.549-.68.116-.173.231-.145.39-.086s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.099.824z"/></svg>
-                                    <span>Kirim via WhatsApp</span>
+                                    <span>Send via WhatsApp</span>
                                 </a>
                             @else
                                 <button type="button" disabled class="flex items-center justify-center gap-1.5 px-3 py-2 bg-slate-100 text-slate-400 rounded-xl text-xs font-semibold cursor-not-allowed">
@@ -307,12 +307,12 @@
                         <!-- Manual / Direct Activation Link -->
                         <div class="pt-2 border-t border-slate-100">
                             <div class="flex items-center justify-between mb-1.5">
-                                <span class="text-[11px] font-semibold text-slate-700">Tautan Onboarding Telegram:</span>
+                                <span class="text-[11px] font-semibold text-slate-700">Telegram Onboarding Link:</span>
                                 <form method="POST" action="{{ route('admin.sponsors.check-telegram-status', $sponsor) }}">
                                     @csrf
-                                    <button type="submit" title="Cek apakah donatur sudah klik Start di Telegram" class="inline-flex items-center gap-1 text-[11px] font-semibold text-sky-600 hover:text-sky-700 hover:underline cursor-pointer">
+                                    <button type="submit" title="Check if donor has tapped Start in Telegram" class="inline-flex items-center gap-1 text-[11px] font-semibold text-sky-600 hover:text-sky-700 hover:underline cursor-pointer">
                                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                                        <span>Cek Status Sekarang</span>
+                                        <span>Check Status Now</span>
                                     </button>
                                 </form>
                             </div>
@@ -320,12 +320,12 @@
                             <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200/80 text-[11px] break-all font-mono select-all text-sky-600 flex items-center justify-between gap-2">
                                 <span class="truncate">{{ $telegramOnboardUrl }}</span>
                                 <a href="{{ $telegramOnboardUrl }}" target="_blank" class="shrink-0 px-2 py-1 bg-sky-100 hover:bg-sky-200 text-sky-800 rounded-md font-sans text-[10px] font-semibold transition">
-                                    Buka Link ↗
+                                    Open Link ↗
                                 </a>
                             </div>
 
                             <p class="text-[10px] text-slate-400 mt-2">
-                                Kode Unik Sponsor: <strong class="text-slate-600 font-mono">{{ $sponsor->telegram_onboard_code }}</strong>
+                                Unique Donor Code: <strong class="text-slate-600 font-mono">{{ $sponsor->telegram_onboard_code }}</strong>
                             </p>
                         </div>
                     @endif

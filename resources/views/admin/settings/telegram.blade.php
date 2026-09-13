@@ -3,7 +3,7 @@
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
                 <h1 class="text-xl font-bold text-slate-900 tracking-tight">Telegram Bot Message Templates</h1>
-                <p class="text-xs text-slate-500 mt-0.5">Kustomisasi balasan otomatis, pesan selamat datang, dan konfirmasi aktivasi bot Telegram</p>
+                <p class="text-xs text-slate-500 mt-0.5">Customize automated greetings, activation confirmations, and bot replies</p>
             </div>
             <div class="flex items-center gap-2">
                 @if($botUsername)
@@ -38,7 +38,7 @@
 
         @if ($errors->any())
             <div class="p-4 bg-rose-50 border border-rose-200 text-rose-800 rounded-2xl text-xs space-y-1 shadow-xs">
-                <div class="font-semibold">Mohon periksa kembali form berikut:</div>
+                <div class="font-semibold">Please review the following errors:</div>
                 <ul class="list-disc list-inside space-y-0.5 text-rose-700">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -47,13 +47,13 @@
             </div>
         @endif
 
-        <!-- Sub-Navigation Tabs: Platform Branding | Bot Telegram | Reminder Waves -->
+        <!-- Sub-Navigation Tabs: Platform & Branding | Telegram Templates | Reminder Waves -->
         <div class="flex items-center gap-1 p-1 bg-slate-200/50 rounded-xl w-fit text-xs">
             <a href="{{ route('admin.settings.platform') }}" class="px-4 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 font-medium transition">
                 Platform & Branding
             </a>
             <span class="px-4 py-1.5 rounded-lg bg-white font-semibold text-slate-900 shadow-xs cursor-default">
-                Template Bot Telegram
+                Telegram Bot
             </span>
             <a href="{{ route('admin.settings.index') }}" class="px-4 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 font-medium transition">
                 Reminder Waves
@@ -64,10 +64,10 @@
             @csrf
             @method('PUT')
 
-            <!-- Grid 1: Aktivasi Berhasil & Selamat Datang -->
+            <!-- Grid 1: Activation Success & Welcome Message -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-                <!-- 1. Pesan Aktivasi Berhasil -->
+                <!-- 1. Activation Success Message -->
                 <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-6 flex flex-col justify-between" x-data="{ text: @js(old('telegram_msg_activation_success', $activationSuccessMsg)) }">
                     <div>
                         <div class="flex items-center justify-between mb-2">
@@ -75,17 +75,17 @@
                                 <div class="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-xs">
                                     ✓
                                 </div>
-                                <h3 class="font-bold text-slate-900 text-sm">Pesan Berhasil Terhubung</h3>
+                                <h3 class="font-bold text-slate-900 text-sm">Activation Success Message</h3>
                             </div>
                             <span class="text-[11px] text-slate-400 font-mono" x-text="text.length + ' / 2000'"></span>
                         </div>
                         <p class="text-xs text-slate-500 mb-3">
-                            Dikirimkan saat sponsor mengklik tautan aktivasi dan menekan tombol <strong>START</strong> di Telegram.
+                            Dispatched when a donor clicks their activation link and taps <strong>START</strong> in Telegram.
                         </p>
 
                         <!-- Variable Chips -->
                         <div class="mb-3 flex items-center gap-1.5 flex-wrap">
-                            <span class="text-[10px] text-slate-400">Variabel Dinamis:</span>
+                            <span class="text-[10px] text-slate-400">Dynamic Variables:</span>
                             <button type="button" @click="text += ' {sponsor_name}'" class="text-[10px] px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono transition cursor-pointer">
                                 {sponsor_name}
                             </button>
@@ -103,10 +103,10 @@
                             class="w-full text-xs font-mono rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 leading-relaxed focus:border-slate-400 focus:ring-slate-400"
                         ></textarea>
                     </div>
-                    <p class="text-[10px] text-slate-400 mt-2">Mendukung format Markdown standar Telegram (*tebal*, _miring_).</p>
+                    <p class="text-[10px] text-slate-400 mt-2">Supports standard Telegram Markdown formatting (*bold*, _italic_).</p>
                 </div>
 
-                <!-- 2. Pesan Selamat Datang (/start tanpa kode) -->
+                <!-- 2. Welcome Message (/start without code) -->
                 <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-6 flex flex-col justify-between" x-data="{ text: @js(old('telegram_msg_welcome', $welcomeMsg)) }">
                     <div>
                         <div class="flex items-center justify-between mb-2">
@@ -114,17 +114,17 @@
                                 <div class="w-7 h-7 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center font-bold text-xs">
                                     👋
                                 </div>
-                                <h3 class="font-bold text-slate-900 text-sm">Pesan Sambutan (/start)</h3>
+                                <h3 class="font-bold text-slate-900 text-sm">Welcome Message (/start)</h3>
                             </div>
                             <span class="text-[11px] text-slate-400 font-mono" x-text="text.length + ' / 2000'"></span>
                         </div>
                         <p class="text-xs text-slate-500 mb-3">
-                            Dikirimkan saat pengguna membuka bot langsung tanpa kode tautan onboarding sponsor.
+                            Dispatched when a user opens the bot directly without a donor onboarding link.
                         </p>
 
                         <!-- Variable Chips -->
                         <div class="mb-3 flex items-center gap-1.5 flex-wrap">
-                            <span class="text-[10px] text-slate-400">Variabel Dinamis:</span>
+                            <span class="text-[10px] text-slate-400">Dynamic Variables:</span>
                             <button type="button" @click="text += ' {platform_name}'" class="text-[10px] px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono transition cursor-pointer">
                                 {platform_name}
                             </button>
@@ -139,15 +139,15 @@
                             class="w-full text-xs font-mono rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 leading-relaxed focus:border-slate-400 focus:ring-slate-400"
                         ></textarea>
                     </div>
-                    <p class="text-[10px] text-slate-400 mt-2">Mendukung format Markdown standar Telegram.</p>
+                    <p class="text-[10px] text-slate-400 mt-2">Supports standard Telegram Markdown formatting.</p>
                 </div>
 
             </div>
 
-            <!-- Grid 2: Balasan Chat Lain & Kode Invalid -->
+            <!-- Grid 2: Default General Reply & Invalid Code -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-                <!-- 3. Balasan Otomatis Chat Lain (Default Reply) -->
+                <!-- 3. Default Auto-Reply (General Messages) -->
                 <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-6 flex flex-col justify-between" x-data="{ text: @js(old('telegram_msg_default_reply', $defaultReplyMsg)) }">
                     <div>
                         <div class="flex items-center justify-between mb-2">
@@ -155,17 +155,17 @@
                                 <div class="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-xs">
                                     💬
                                 </div>
-                                <h3 class="font-bold text-slate-900 text-sm">Balasan Otomatis Chat Masuk Lainnya</h3>
+                                <h3 class="font-bold text-slate-900 text-sm">Default Auto-Reply (General Messages)</h3>
                             </div>
                             <span class="text-[11px] text-slate-400 font-mono" x-text="text.length + ' / 2000'"></span>
                         </div>
                         <p class="text-xs text-slate-500 mb-3">
-                            Balasan standar saat pengguna mengetik pesan teks bebas apa saja di luar perintah sistem.
+                            Standard response when a user sends any freeform message outside system commands.
                         </p>
 
                         <!-- Variable Chips -->
                         <div class="mb-3 flex items-center gap-1.5 flex-wrap">
-                            <span class="text-[10px] text-slate-400">Variabel Dinamis:</span>
+                            <span class="text-[10px] text-slate-400">Dynamic Variables:</span>
                             <button type="button" @click="text += ' {platform_name}'" class="text-[10px] px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono transition cursor-pointer">
                                 {platform_name}
                             </button>
@@ -180,10 +180,10 @@
                             class="w-full text-xs font-mono rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 leading-relaxed focus:border-slate-400 focus:ring-slate-400"
                         ></textarea>
                     </div>
-                    <p class="text-[10px] text-slate-400 mt-2">Dapat diisi arahan menghubungi admin/WhatsApp resmi yayasan.</p>
+                    <p class="text-[10px] text-slate-400 mt-2">Recommended: provide instructions or official contact details.</p>
                 </div>
 
-                <!-- 4. Pesan Kode Tidak Dikenali / Invalid -->
+                <!-- 4. Invalid / Expired Activation Code -->
                 <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-6 flex flex-col justify-between" x-data="{ text: @js(old('telegram_msg_invalid_code', $invalidCodeMsg)) }">
                     <div>
                         <div class="flex items-center justify-between mb-2">
@@ -191,17 +191,17 @@
                                 <div class="w-7 h-7 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center font-bold text-xs">
                                     ✕
                                 </div>
-                                <h3 class="font-bold text-slate-900 text-sm">Pesan Kode Aktivasi Tidak Valid</h3>
+                                <h3 class="font-bold text-slate-900 text-sm">Invalid / Expired Activation Code</h3>
                             </div>
                             <span class="text-[11px] text-slate-400 font-mono" x-text="text.length + ' / 2000'"></span>
                         </div>
                         <p class="text-xs text-slate-500 mb-3">
-                            Dikirimkan saat kode aktivasi sponsor yang dikirim tidak ditemukan di database atau salah ketik.
+                            Dispatched when the onboarding code provided is not found or has expired.
                         </p>
 
                         <!-- Variable Chips -->
                         <div class="mb-3 flex items-center gap-1.5 flex-wrap">
-                            <span class="text-[10px] text-slate-400">Variabel Dinamis:</span>
+                            <span class="text-[10px] text-slate-400">Dynamic Variables:</span>
                             <button type="button" @click="text += ' {platform_name}'" class="text-[10px] px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono transition cursor-pointer">
                                 {platform_name}
                             </button>
@@ -216,7 +216,7 @@
                             class="w-full text-xs font-mono rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 leading-relaxed focus:border-slate-400 focus:ring-slate-400"
                         ></textarea>
                     </div>
-                    <p class="text-[10px] text-slate-400 mt-2">Memberi tahu pengguna untuk meminta link baru dari staf.</p>
+                    <p class="text-[10px] text-slate-400 mt-2">Instructs the user to request a fresh activation link from administrative staff.</p>
                 </div>
 
             </div>
@@ -226,10 +226,10 @@
                 <div>
                     <button 
                         type="button"
-                        onclick="if(confirm('Apakah Anda yakin ingin mengembalikan seluruh template pesan Bot Telegram ke teks default bawaan?')) { document.getElementById('reset-templates-form').submit(); }"
+                        onclick="if(confirm('Are you sure you want to reset all Telegram Bot message templates to defaults?')) { document.getElementById('reset-templates-form').submit(); }"
                         class="text-xs text-rose-600 hover:text-rose-800 hover:underline font-medium transition cursor-pointer"
                     >
-                        Reset ke Format Default
+                        Reset to Default Templates
                     </button>
                 </div>
 
@@ -239,7 +239,7 @@
                         class="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold shadow-xs transition active:scale-[0.98] flex items-center gap-2 cursor-pointer"
                     >
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                        <span>Simpan Perubahan Template</span>
+                        <span>Save Template Changes</span>
                     </button>
                 </div>
             </div>

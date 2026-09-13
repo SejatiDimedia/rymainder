@@ -40,10 +40,10 @@ class TelegramSettingController extends Controller
             'telegram_msg_default_reply' => ['required', 'string', 'max:2000'],
             'telegram_msg_invalid_code' => ['required', 'string', 'max:2000'],
         ], [
-            'telegram_msg_activation_success.required' => 'Pesan aktivasi berhasil wajib diisi.',
-            'telegram_msg_welcome.required' => 'Pesan sambutan bot wajib diisi.',
-            'telegram_msg_default_reply.required' => 'Pesan balasan default wajib diisi.',
-            'telegram_msg_invalid_code.required' => 'Pesan kode aktivasi invalid wajib diisi.',
+            'telegram_msg_activation_success.required' => 'Activation success message is required.',
+            'telegram_msg_welcome.required' => 'Welcome message is required.',
+            'telegram_msg_default_reply.required' => 'Default reply message is required.',
+            'telegram_msg_invalid_code.required' => 'Invalid code message is required.',
         ]);
 
         PlatformSetting::set('telegram_msg_activation_success', trim($validated['telegram_msg_activation_success']));
@@ -52,7 +52,7 @@ class TelegramSettingController extends Controller
         PlatformSetting::set('telegram_msg_invalid_code', trim($validated['telegram_msg_invalid_code']));
 
         return redirect()->route('admin.settings.telegram')
-            ->with('success', 'Template pesan balasan Bot Telegram berhasil diperbarui.');
+            ->with('success', 'Telegram Bot message templates updated successfully.');
     }
 
     /**
@@ -65,6 +65,6 @@ class TelegramSettingController extends Controller
         }
 
         return redirect()->route('admin.settings.telegram')
-            ->with('success', 'Seluruh template pesan Bot Telegram telah dikembalikan ke format default.');
+            ->with('success', 'All Telegram Bot message templates have been reset to defaults.');
     }
 }
