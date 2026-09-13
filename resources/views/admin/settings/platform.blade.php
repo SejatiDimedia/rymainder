@@ -119,7 +119,24 @@
                             System Timezone (Zona Waktu Pengingat) <span class="text-rose-500">*</span>
                         </label>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-start">
-                            <div>
+                            <div x-data="{
+                                browserTz: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                                applyBrowserTz() {
+                                    const select = document.getElementById('platform_timezone');
+                                    if (!select) return;
+                                    for (let opt of select.options) {
+                                        if (opt.value === this.browserTz) {
+                                            select.value = opt.value;
+                                            return;
+                                        }
+                                    }
+                                    const offsetHours = -new Date().getTimezoneOffset() / 60;
+                                    if (offsetHours === 7) select.value = 'Asia/Jakarta';
+                                    else if (offsetHours === 8) select.value = 'Asia/Makassar';
+                                    else if (offsetHours === 9) select.value = 'Asia/Jayapura';
+                                    else select.value = 'UTC';
+                                }
+                            }">
                                 <select 
                                     id="platform_timezone" 
                                     name="platform_timezone" 
@@ -131,6 +148,19 @@
                                         </option>
                                     @endforeach
                                 </select>
+                                <div class="mt-2 flex items-center justify-between gap-2 flex-wrap text-[11px]">
+                                    <p class="text-slate-400">
+                                        Perangkat terdeteksi: <strong class="text-slate-700 font-mono" x-text="browserTz"></strong>
+                                    </p>
+                                    <button 
+                                        type="button" 
+                                        @click="applyBrowserTz()" 
+                                        class="inline-flex items-center gap-1 text-[11px] font-semibold text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-2 py-0.5 rounded-lg border border-indigo-200 transition cursor-pointer"
+                                    >
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                        Pilih Sesuai Waktu Perangkat Saya
+                                    </button>
+                                </div>
                                 <p class="text-[11px] text-slate-400 mt-1.5 leading-relaxed">
                                     Semua jadwal pengingat (Harian, Mingguan, Jam) dan log riwayat pengiriman akan dievaluasi sesuai zona waktu yang dipilih.
                                 </p>
