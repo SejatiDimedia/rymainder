@@ -19,11 +19,11 @@ class SyncTelegramUpdatesAction
      */
     public function execute(): array
     {
-        $botToken = config('rymainder.channels.telegram.bot_token');
+        $botToken = \App\Models\PlatformSetting::getTelegramBotToken();
         if (empty($botToken)) {
             return [
                 'status' => 'error',
-                'message' => 'Telegram Bot Token belum dikonfigurasi di file .env.',
+                'message' => 'Telegram Bot Token is not configured on the server.',
                 'processed' => 0,
                 'linked' => [],
             ];
@@ -35,7 +35,7 @@ class SyncTelegramUpdatesAction
             $response = Http::timeout(10)->get("{$endpoint}/bot{$botToken}/getUpdates");
 
             if (! $response->successful() || $response->json('ok') !== true) {
-                $err = $response->json('description') ?? 'Gagal menghubungi Telegram API.';
+                $err = $response->json('description') ?? 'Failed to connect to Telegram API.';
                 return [
                     'status' => 'error',
                     'message' => "Telegram API: {$err}",

@@ -7,6 +7,7 @@ use App\Domain\Communication\DataTransferObjects\DeliveryResult;
 use App\Domain\Communication\DataTransferObjects\NotificationPayload;
 use App\Domain\Reminder\Enums\ReminderChannel;
 use App\Domain\Sponsor\Models\Sponsor;
+use App\Models\PlatformSetting;
 use Exception;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -22,24 +23,23 @@ class TelegramBotChannelDriver implements ReminderChannelDriverInterface
     {
         // 1. Check if sponsor has onboarded Telegram
         if (empty($sponsor->telegram_chat_id)) {
-            return DeliveryResult::skipped("Sponsor belum menghubungkan Telegram (belum /start ke bot yayasan).");
+            return DeliveryResult::skipped("Sponsor has not connected Telegram yet (belum menghubungkan Telegram / no Chat ID).");
         }
 
-        $config = config('rymainder.channels.telegram');
-        $botToken = $config['bot_token'] ?? null;
+        $botToken = PlatformSetting::getTelegramBotToken();
 
         if (empty($botToken)) {
-            if (app()->environment('local', 'testing')) {
+            if (app()->environment('testing')) {
                 Log::info("[MOCK] Telegram message sent to chat {$sponsor->telegram_chat_id}: {$payload->subject}");
                 return DeliveryResult::success('mock_tg_' . uniqid());
             }
 
-            return DeliveryResult::failure("Kredensial Telegram Bot Token belum dikonfigurasi di server.");
+            return DeliveryResult::failure("Telegram Bot Token is not configured on the server. Please set TELEGRAM_BOT_TOKEN in .env or Settings.");
         }
 
-        try {
-            $endpoint = rtrim($config['endpoint'] ?? 'https://api.telegram.org', '/') . "/bot{$botToken}/sendMessage";
+        $endpoint = rtrim(config('rymainder.channels.telegram.endpoint') ?? 'https://api.telegram.org', '/') . "/bot{$botToken}/sendMessage";
 
+        try {
             $response = Http::timeout(10)->post($endpoint, [
                 'chat_id' => $sponsor->telegram_chat_id,
                 'text' => $payload->messageBody,
@@ -52,14 +52,31 @@ class TelegramBotChannelDriver implements ReminderChannelDriverInterface
             }
 
             $description = $response->json('description') ?? $response->body();
+
+            // Fallback: If Markdown parse error (e.g. 400 Bad Request with entity parse issue), retry as plain text
+            if ($response->status() === 400 && str_contains(strtolower($description), 'parse')) {
+                Log::warning("Telegram Markdown parse error, retrying as plain text for sponsor {$sponsor->id}: {$description}");
+                $fallbackResponse = Http::timeout(10)->post($endpoint, [
+                    'chat_id' => $sponsor->telegram_chat_id,
+                    'text' => $payload->messageBody,
+                ]);
+
+                if ($fallbackResponse->successful() && $fallbackResponse->json('ok') === true) {
+                    $messageId = $fallbackResponse->json('result.message_id');
+                    return DeliveryResult::success((string) $messageId);
+                }
+
+                $description = $fallbackResponse->json('description') ?? $fallbackResponse->body();
+            }
+
             return DeliveryResult::failure("Telegram API Error: {$description}");
         } catch (Exception $e) {
-            return DeliveryResult::failure("Koneksi Telegram API gagal: " . $e->getMessage());
+            return DeliveryResult::failure("Telegram connection failed: " . $e->getMessage());
         }
     }
 
     public function isConfigured(): bool
     {
-        return ! empty(config('rymainder.channels.telegram.bot_token'));
+        return ! empty(PlatformSetting::getTelegramBotToken());
     }
 }

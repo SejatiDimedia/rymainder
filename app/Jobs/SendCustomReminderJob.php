@@ -54,11 +54,6 @@ class SendCustomReminderJob implements ShouldQueue
             return;
         }
 
-        if (! $sponsor->isChannelEnabled($this->channel)) {
-            Log::info("Skipping channel {$this->channel->value} as it is disabled for sponsor {$sponsor->id}.");
-            return;
-        }
-
         $nextDueDate = $sponsor->getNextDueDate();
         $daysDiff = $calculator->calculateDaysDifference($nextDueDate);
 
@@ -71,6 +66,68 @@ class SendCustomReminderJob implements ShouldQueue
             customTemplate: $customReminder->message,
             isCustom: true,
         );
+
+        // 1. Check channel contact availability
+        if ($this->channel === ReminderChannel::TELEGRAM && empty($sponsor->telegram_chat_id)) {
+            Log::info("Skipping Telegram for sponsor {$sponsor->id}: No Telegram Chat ID connected.");
+            ReminderLog::create([
+                'sponsor_id' => $sponsor->id,
+                'due_date' => $nextDueDate->toDateString(),
+                'custom_reminder_id' => $customReminder->id,
+                'channel' => $this->channel,
+                'is_manual' => false,
+                'status' => DeliveryStatus::SKIPPED,
+                'error_message' => 'Sponsor has not connected Telegram account yet (no Chat ID).',
+                'custom_message' => $payload->messageBody,
+            ]);
+            return;
+        }
+
+        if ($this->channel === ReminderChannel::EMAIL && empty($sponsor->email)) {
+            Log::info("Skipping Email for sponsor {$sponsor->id}: No email address.");
+            ReminderLog::create([
+                'sponsor_id' => $sponsor->id,
+                'due_date' => $nextDueDate->toDateString(),
+                'custom_reminder_id' => $customReminder->id,
+                'channel' => $this->channel,
+                'is_manual' => false,
+                'status' => DeliveryStatus::SKIPPED,
+                'error_message' => 'Sponsor email address is empty.',
+                'custom_message' => $payload->messageBody,
+            ]);
+            return;
+        }
+
+        if ($this->channel === ReminderChannel::WHATSAPP && empty($sponsor->phone)) {
+            Log::info("Skipping WhatsApp for sponsor {$sponsor->id}: No phone number.");
+            ReminderLog::create([
+                'sponsor_id' => $sponsor->id,
+                'due_date' => $nextDueDate->toDateString(),
+                'custom_reminder_id' => $customReminder->id,
+                'channel' => $this->channel,
+                'is_manual' => false,
+                'status' => DeliveryStatus::SKIPPED,
+                'error_message' => 'Sponsor phone number is empty.',
+                'custom_message' => $payload->messageBody,
+            ]);
+            return;
+        }
+
+        // 2. For non-selected broadcasts, check channel preferences
+        if ($customReminder->target_type !== 'selected' && ! $sponsor->isChannelEnabled($this->channel)) {
+            Log::info("Skipping channel {$this->channel->value} as it is disabled in sponsor {$sponsor->id} preferences.");
+            ReminderLog::create([
+                'sponsor_id' => $sponsor->id,
+                'due_date' => $nextDueDate->toDateString(),
+                'custom_reminder_id' => $customReminder->id,
+                'channel' => $this->channel,
+                'is_manual' => false,
+                'status' => DeliveryStatus::SKIPPED,
+                'error_message' => "Channel {$this->channel->label()} is disabled in sponsor preferences.",
+                'custom_message' => $payload->messageBody,
+            ]);
+            return;
+        }
 
         $log = ReminderLog::create([
             'sponsor_id' => $sponsor->id,

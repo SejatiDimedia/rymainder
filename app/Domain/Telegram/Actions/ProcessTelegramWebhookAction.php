@@ -81,7 +81,7 @@ class ProcessTelegramWebhookAction
 
     protected function sendTelegramReply(int|string $chatId, string $text): void
     {
-        $botToken = config('rymainder.channels.telegram.bot_token');
+        $botToken = \App\Models\PlatformSetting::getTelegramBotToken();
         if (empty($botToken)) {
             Log::info("[MOCK TELEGRAM REPLY] Chat: {$chatId} | Message: {$text}");
             return;
@@ -89,11 +89,19 @@ class ProcessTelegramWebhookAction
 
         try {
             $endpoint = rtrim(config('rymainder.channels.telegram.endpoint', 'https://api.telegram.org'), '/') . "/bot{$botToken}/sendMessage";
-            Http::timeout(5)->post($endpoint, [
+            $res = Http::timeout(5)->post($endpoint, [
                 'chat_id' => $chatId,
                 'text' => $text,
                 'parse_mode' => 'Markdown',
             ]);
+
+            // Fallback to plain text if Markdown entity parse error
+            if ($res->status() === 400 && str_contains(strtolower($res->body()), 'parse')) {
+                Http::timeout(5)->post($endpoint, [
+                    'chat_id' => $chatId,
+                    'text' => $text,
+                ]);
+            }
         } catch (Exception $e) {
             Log::error("Failed to send Telegram reply: " . $e->getMessage());
         }

@@ -171,4 +171,22 @@ class PlatformSetting extends Model
     {
         return (string) (static::get('telegram_msg_invalid_code') ?: static::defaultTelegramMessages()['telegram_msg_invalid_code']);
     }
+
+    /**
+     * Get the configured Telegram Bot Token (DB platform setting or .env config fallback).
+     */
+    public static function getTelegramBotToken(): ?string
+    {
+        return static::get('telegram_bot_token') ?: config('rymainder.channels.telegram.bot_token');
+    }
+
+    /**
+     * Get the configured Telegram Bot Username (DB platform setting or .env config fallback).
+     */
+    public static function getTelegramBotUsername(): ?string
+    {
+        $username = static::get('telegram_bot_username') ?: config('rymainder.channels.telegram.bot_username');
+        return $username ? ltrim($username, '@') : null;
+    }
 }
+

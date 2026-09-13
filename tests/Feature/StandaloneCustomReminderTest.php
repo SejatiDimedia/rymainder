@@ -439,4 +439,73 @@ class StandaloneCustomReminderTest extends TestCase
             ])
             ->assertForbidden();
     }
+
+    public function test_custom_reminder_dispatches_via_telegram_and_skips_when_chat_id_is_missing(): void
+    {
+        config([
+            'rymainder.channels.telegram.bot_token' => 'fake_token',
+            'rymainder.channels.telegram.endpoint' => 'https://api.telegram.org',
+        ]);
+
+        \Illuminate\Support\Facades\Http::fake([
+            'https://api.telegram.org/botfake_token/sendMessage' => \Illuminate\Support\Facades\Http::response([
+                'ok' => true,
+                'result' => ['message_id' => 9988],
+            ]),
+        ]);
+
+        $connectedSponsor = Sponsor::create([
+            'name' => 'Telegram Donor',
+            'phone' => '+6281234567891',
+            'email' => 'tgdonor@example.com',
+            'amount' => 500000,
+            'frequency' => PaymentFrequency::SIX_MONTHS,
+            'last_donation_date' => Carbon::parse('2026-08-01'),
+            'status' => SponsorStatus::ACTIVE,
+            'telegram_chat_id' => '12345678',
+        ]);
+
+        $unconnectedSponsor = Sponsor::create([
+            'name' => 'No Telegram Donor',
+            'phone' => '+6281234567892',
+            'email' => 'notg@example.com',
+            'amount' => 300000,
+            'frequency' => PaymentFrequency::SIX_MONTHS,
+            'last_donation_date' => Carbon::parse('2026-08-01'),
+            'status' => SponsorStatus::ACTIVE,
+            'telegram_chat_id' => null,
+        ]);
+
+        $reminder = CustomReminder::create([
+            'title' => 'Telegram Broadcast Alert',
+            'message' => 'Salam {sponsor_name}, your pledge of {amount} is ready.',
+            'channels' => ['telegram'],
+            'target_type' => 'selected',
+            'schedule_type' => 'daily',
+            'schedule_times' => ['10:00'],
+            'is_active' => true,
+        ]);
+        $reminder->sponsors()->attach([$connectedSponsor->id, $unconnectedSponsor->id]);
+
+        $action = app(\App\Domain\Reminder\Actions\DispatchCustomReminderAction::class);
+        $count = $action->execute($reminder, sync: true);
+
+        $this->assertEquals(2, $count);
+
+        // Connected sponsor should be marked SENT
+        $this->assertDatabaseHas('reminder_logs', [
+            'sponsor_id' => $connectedSponsor->id,
+            'custom_reminder_id' => $reminder->id,
+            'channel' => 'telegram',
+            'status' => DeliveryStatus::SENT->value,
+        ]);
+
+        // Unconnected sponsor should be marked SKIPPED with clear reason
+        $this->assertDatabaseHas('reminder_logs', [
+            'sponsor_id' => $unconnectedSponsor->id,
+            'custom_reminder_id' => $reminder->id,
+            'channel' => 'telegram',
+            'status' => DeliveryStatus::SKIPPED->value,
+        ]);
+    }
 }

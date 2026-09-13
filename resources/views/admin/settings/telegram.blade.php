@@ -60,7 +60,120 @@
             </a>
         </div>
 
-        <form method="POST" action="{{ route('admin.settings.telegram.update') }}" class="space-y-6">
+        <!-- Bot Status & Quick Connectivity Test -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- Left: Bot Connection Status & Credentials -->
+            <div class="lg:col-span-7 bg-white rounded-2xl border border-slate-200/80 shadow-xs p-6 space-y-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center font-bold text-sm">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.93-1.28 4.88-2.12 5.86-2.54 2.8-.19 3.38 1.15 3.39 1.47z"/></svg>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-900 text-sm">Telegram Bot Credentials</h3>
+                            <p class="text-xs text-slate-500">Integration credentials for dispatching donor reminders</p>
+                        </div>
+                    </div>
+                    <div>
+                        @if($hasToken)
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                Active & Connected
+                            </span>
+                        @else
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+                                <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                                Token Missing
+                            </span>
+                        @endif
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Bot Username</label>
+                        <div class="flex items-center gap-1.5">
+                            <input 
+                                type="text" 
+                                form="telegram-settings-form"
+                                name="telegram_bot_username" 
+                                value="{{ old('telegram_bot_username', $botUsername) }}" 
+                                placeholder="e.g. RymainderBot"
+                                class="w-full text-xs font-mono rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 focus:border-slate-400 focus:ring-slate-400"
+                            />
+                            @if($botUsername)
+                                <a 
+                                    href="https://t.me/{{ $botUsername }}" 
+                                    target="_blank" 
+                                    title="Open Bot in Telegram"
+                                    class="p-2 bg-sky-50 text-sky-600 rounded-xl hover:bg-sky-100 transition shrink-0"
+                                >
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Bot HTTP API Token</label>
+                        <input 
+                            type="password" 
+                            form="telegram-settings-form"
+                            name="telegram_bot_token" 
+                            value="{{ old('telegram_bot_token', $botToken) }}" 
+                            placeholder="e.g. 123456789:AA..."
+                            class="w-full text-xs font-mono rounded-xl border-slate-200 bg-slate-50/50 text-slate-900 focus:border-slate-400 focus:ring-slate-400"
+                        />
+                    </div>
+                </div>
+
+                <p class="text-[11px] text-slate-400">
+                    Credentials are saved in the system database and automatically fall back to your <code class="font-mono text-slate-600">.env</code> configuration file.
+                </p>
+            </div>
+
+            <!-- Right: Quick Connectivity Test Ping -->
+            <div class="lg:col-span-5 bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl shadow-xs p-6 text-white flex flex-col justify-between space-y-4">
+                <div>
+                    <div class="flex items-center gap-2 mb-1.5">
+                        <span class="p-1.5 bg-sky-500/20 text-sky-400 rounded-lg text-xs font-bold">⚡</span>
+                        <h3 class="font-bold text-sm text-white">Quick Bot Connectivity Test</h3>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        Verify instant delivery by sending a real test notification directly to your Telegram Chat ID.
+                    </p>
+                </div>
+
+                <form method="POST" action="{{ route('admin.settings.telegram.test-ping') }}" class="space-y-3">
+                    @csrf
+                    <div>
+                        <label class="block text-[11px] font-medium text-slate-300 mb-1">Recipient Telegram Chat ID</label>
+                        <div class="flex items-center gap-2">
+                            <input 
+                                type="text" 
+                                name="test_chat_id" 
+                                value="{{ old('test_chat_id', '623973856') }}" 
+                                placeholder="e.g. 623973856" 
+                                required
+                                class="w-full text-xs font-mono rounded-xl border-slate-700 bg-slate-800/80 text-white placeholder-slate-500 focus:border-sky-400 focus:ring-sky-400"
+                            />
+                            <button 
+                                type="submit" 
+                                class="px-4 py-2 bg-sky-500 hover:bg-sky-400 text-slate-950 font-semibold text-xs rounded-xl shadow-xs transition active:scale-95 shrink-0 flex items-center gap-1.5 cursor-pointer"
+                            >
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+                                <span>Send Test</span>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="text-[10px] text-slate-400">
+                        Tip: Open <code class="text-sky-300">t.me/{{ $botUsername ?: 'RymainderBot' }}</code> and tap Start if you haven't initiated chat yet.
+                    </p>
+                </form>
+            </div>
+        </div>
+
+        <form id="telegram-settings-form" method="POST" action="{{ route('admin.settings.telegram.update') }}" class="space-y-6">
             @csrf
             @method('PUT')
 
