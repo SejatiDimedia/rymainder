@@ -206,7 +206,7 @@ class ReminderRetryTest extends TestCase
 
     public function test_logs_index_renders_failed_alert_banner_and_retry_all_button(): void
     {
-        ReminderLog::create([
+        $log = ReminderLog::create([
             'sponsor_id' => $this->sponsor->id,
             'channel' => ReminderChannel::EMAIL,
             'due_date' => now()->toDateString(),
@@ -220,6 +220,10 @@ class ReminderRetryTest extends TestCase
         $response->assertOk();
         $response->assertSee('Attention: 1 Failed Reminder Detected');
         $response->assertSee('Retry All Failed Reminders (1)');
+        // Custom Bulk & Single Retry Modals
+        $response->assertSee('Confirm Bulk Resend');
+        $response->assertSee('Confirm Reminder Resend');
+        $response->assertSee('data-url="' . route('admin.logs.retry', $log) . '"', false);
     }
 
     public function test_sponsors_show_renders_retry_button_for_failed_log(): void
@@ -238,6 +242,9 @@ class ReminderRetryTest extends TestCase
         $response->assertOk();
         $response->assertSee(route('admin.logs.retry', $log));
         $response->assertSee('Retry');
+        // Custom Single Retry Modal
+        $response->assertSee('Confirm Reminder Resend');
+        $response->assertSee('data-url="' . route('admin.logs.retry', $log) . '"', false);
     }
 
     public function test_retry_failed_reminders_artisan_command(): void
